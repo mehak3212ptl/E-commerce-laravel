@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductsController;
-
+use App\Http\Controllers\adminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,9 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -29,9 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
-Route::get('/', [ProductsController::class, 'index'])->name('product.index');
-
+// ----------------------Ajax crud routes -------------------
+// Route::get('/', [ProductsController::class, 'index'])->name('product.index');
 Route::prefix('products')->group(function(){
     Route::post('/save-item', [ProductsController::class, 'store'])->name('product.store');
     Route::get('/{id}/edit',[ProductsController::class, 'edit'])->name('product.edit');
@@ -40,3 +39,7 @@ Route::prefix('products')->group(function(){
 });
 
 require __DIR__.'/auth.php';
+
+
+// admin routes --------------------
+Route::get('/dashboard',[admincontroller::class,'index'])->middleware(['auth', 'verified'])->name('login');
