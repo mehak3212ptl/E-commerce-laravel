@@ -30,7 +30,8 @@ Route::middleware('auth')->group(function () {
 });
 
 // ----------------------Ajax crud routes -------------------
-// Route::get('/', [ProductsController::class, 'index'])->name('product.index');
+Route::get('index1', [ProductsController::class, 'index'])->name('product.index');
+
 Route::prefix('products')->group(function(){
     Route::post('/save-item', [ProductsController::class, 'store'])->name('product.store');
     Route::get('/{id}/edit',[ProductsController::class, 'edit'])->name('product.edit');
@@ -42,4 +43,5 @@ require __DIR__.'/auth.php';
 
 
 // admin routes --------------------
-Route::get('/dashboard',[admincontroller::class,'index'])->middleware(['auth', 'verified'])->name('login');
+Route::get('/dashboard',[admincontroller::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/viewproduct', [admincontroller::class, 'viewproduct'])->name('viewproduct');

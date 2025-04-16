@@ -1,33 +1,4 @@
-<!DOCTYPE html>
-<html>
 
-<head>
-    <title>Product List</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- SweetAlert2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-
-    <style>
-        .product-img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-
-        .error-text {
-            font-size: 0.875rem;
-            color: red;
-        }
-    </style>
-</head>
-
-<body>
 
     <div class="container mt-5">
         <h2 class="mb-4">Product List</h2>
@@ -162,7 +133,7 @@
 
 
     <!-- Bootstrap Image Preview Modal -->
-    <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewLabel" aria-hidden="true">
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewLabel" aria-hidden="true" style="z-index: 1055 !important;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark">
                 <div class="modal-header border-0">
@@ -179,13 +150,16 @@
 
 
     <!-- Bootstrap & jQuery -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
+    
     <script>
+
+            // $('#addProductModal').modal('hide'); // Close modal
+
+            // // Remove backdrop and cleanup body class
+            // $('.modal-backdrop').remove();
+            // $('body').removeClass('modal-open');
+            // $('body').css('padding-right', '');
+
         // Show image in modal
         $(document).on('click', '.product-img', function() {
              const imageUrl = $(this).attr('src');
@@ -329,7 +303,3 @@
         });
     </script>
 
-
-</body>
-
-</html>
