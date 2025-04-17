@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\category;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,5 +11,10 @@ class ProductsModel extends Model
 
     protected $table = 'products';
 
-    protected $fillable = ['name', 'description', 'image'];
+    protected $fillable = ['name', 'description', 'image','category_id'];
+
+    public function  category(){
+        return $this->belongsTo(category::class,'category_id');
+    }
+
 }

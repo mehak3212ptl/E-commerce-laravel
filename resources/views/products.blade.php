@@ -1,58 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Document</title>
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4">Product List</h2>
 
-    <div class="container mt-5">
-        <h2 class="mb-4">Product List</h2>
-
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProductModal">
-            Add Product
+    <!-- Add Product Button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+            <i class="fas fa-plus me-1"></i> Add Product
         </button>
-
-        <div id="message"></div>
-
-        <table class="table table-bordered">
-            <thead>
-                   <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Image</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="productTable">
-                @forelse($products as $index => $product)
-                <tr id="product_{{ $product->id }}">
-                    <td>{{ $product->id}}</td>
-                    <td>{{ $product->name }}</td>
-                    <td>{{ $product->description }}</td>
-                    <td>
-                        @if($product->image)
-                        <img src="{{ asset($product->image) }}" style="width: 120px; height: 60px; cursor:pointer;"
-                            class="product-img" alt="Image">
-                        @else
-                        No Image
-                        @endif
-                    </td>
-                    <td>
-                        <button class="btn btn-warning btn-sm editProductBtn" data-id="{{ $product->id }}"
-                            data-bs-toggle="modal" data-bs-target="#editProductModal">
-                            Edit
-                        </button>
-
-                        <button class="btn btn-danger btn-sm deleteProductBtn" data-id="{{ $product->id }}">
-                            <i class="fas fa-trash-alt"></i> Delete
-                        </button>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="5" class="text-center">No products found</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+        <div id="message" class="flex-grow-1 text-end"></div>
     </div>
+
+    <div class="table-responsive shadow rounded-4 overflow-hidden">
+    <table class="table table-hover align-middle mb-0 table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Image</th>
+                <th scope="col">Category</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="productTable" class="bg-white">
+            @forelse($products as $index => $product)
+            <tr id="product_{{ $product->id }}">
+                <td>{{ $product->id}}</td>
+                <td class="fw-semibold">{{ $product->name }}</td>
+                <td>{{ $product->description }}</td>
+                <td>{{ $product->category->categoryname }}</td>
+                <td>
+                    @if($product->image)
+                    <img src="{{ asset($product->image) }}"
+                         style="width: 100px; height: 60px; object-fit: cover; border-radius: 0.5rem; cursor: pointer;"
+                         class="product-img shadow-sm"
+                         alt="Image">
+                    @else
+                    <span class="text-muted fst-italic">No Image</span>
+                    @endif
+                </td>
+                
+                <td>
+                    <button class="btn btn-warning btn-sm editProductBtn mb-1"
+                        data-id="{{ $product->id }}"
+                        data-bs-toggle="modal" data-bs-target="#editProductModal">
+                        <i class="fas fa-edit me-1"></i>Edit
+                    </button>
+                    <br>
+                    <button class="btn btn-danger btn-sm deleteProductBtn"
+                        data-id="{{ $product->id }}">
+                        <i class="fas fa-trash-alt me-1"></i>Delete
+                    </button>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">No products found</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+ 
+</div>
+
 
     <!-- Add Product Modal -->
     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
@@ -74,6 +102,15 @@
                         <textarea name="description" class="form-control" required></textarea>
                         <span class="text-danger error-text description_error"></span>
                     </div>
+                    <div class="form-group mb-3">
+                    <label >Choose a category:</label>
+
+                        <select name="category" class="form-control" required>
+                        <option value="1">Electronics</option>
+                        <option value="2">Cosmetics</option>
+                       
+                        </select>
+                        </div> 
                     <div class="form-group mb-3">
                         <label>Image:</label>
                         <input type="file" name="image" class="form-control" accept="image/*" required />
@@ -109,6 +146,15 @@
                             required></textarea>
                         <span class="text-danger error-text description_error"></span>
                     </div>
+                    <div class="form-group mb-3">
+                    <label >Choose a category:</label>
+
+                        <select id="editcategory" name="category" class="form-control" required>
+                        <option value="1">Electronics</option>
+                        <option value="2">Cosmetics</option>
+                       
+                        </select>
+                        </div>
                     <div class="form-group mb-3">
                         <label>Image:</label>
 
@@ -191,6 +237,7 @@
                         <td>${response.product.index}</td>
                         <td>${response.product.name}</td>
                         <td>${response.product.description}</td>
+                        <td>${response.product.category}</td>
                         <td><img src="${response.product.image}" class="product-img" alt="Image"></td>
                         <td><button class="btn btn-warning btn-sm editProductBtn" data-id="${response.product.id}">Edit</button>
                         <button class="btn btn-danger btn-sm deleteProductBtn" data-id="${response.product.id}">Delete</button></td>
@@ -222,7 +269,7 @@
                     $('#editProductId').val(response.product.id);
                     $('#editProductName').val(response.product.name);
                     $('#editProductDescription').val(response.product.description);
-    
+                    $('#editcategory').val(response.product.category_id);
                     // Set the image preview
                     if (response.product.image) {
                         $('#edit-preview-image').attr('src', response.product.image).show();
@@ -254,6 +301,7 @@
                     $('#editProductModal').modal('hide');
                     $(`#product_${response.product.id} td:nth-child(2)`).text(response.product.name);
                     $(`#product_${response.product.id} td:nth-child(3)`).text(response.product.description);
+                    $(`#product_${response.product.id} td:nth-child(3)`).text(response.product.category_id);
                     $(`#product_${response.product.id} td:nth-child(4) img`).attr('src', response.product.image);
                 },
                 error: function(xhr) {
@@ -303,3 +351,6 @@
         });
     </script>
 
+
+</body>
+</html>

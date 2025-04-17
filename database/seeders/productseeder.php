@@ -27,6 +27,7 @@ class productseeder extends Seeder
             DB::table('products')->insert([
                 'name' => Str::random(6),
                 'description' =>Str::random(6),
+                'category_id'=>1,
                 'image' => 'images/' . $imageFilename 
             ]);
         }

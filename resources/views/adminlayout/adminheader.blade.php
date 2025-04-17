@@ -10,6 +10,7 @@
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
@@ -191,9 +192,9 @@ body {
   <div class="sidebar">
     <h2>Admin</h2>
     <a href="{{route('dashboard')}}"><i class="fas fa-home"></i> Dashboard</a>
-    <a href="#"><i class="fas fa-user"></i> Users</a>
+    <a href="{{route('users')}}"><i class="fas fa-user"></i> Users</a>
     <a href="{{route('viewproduct')}}"><i class="fa fa-product-hunt"></i> Products</a>
-    <a href="#"><i class="fas fa-cogs"></i> Settings</a>
+    <a href="{{route('settings')}}"><i class="fas fa-cogs"></i> Settings</a>
     
   </div>
  

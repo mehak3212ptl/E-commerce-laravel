@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\category;
 use Illuminate\Http\Request;
-
 use App\Models\ProductsModel;
-
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManager;
 
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProductsController extends Controller
 {
@@ -19,9 +18,15 @@ class ProductsController extends Controller
 
     public function index(Request $request)
     {
-        $products = ProductsModel::latest()->get();
+        // $products = ProductsModel::latest()->get();
+
     
+        // return view('products', compact('products'));
+
+        $products = ProductsModel::with('category')->get();
         return view('products', compact('products'));
+    
+     
     }
     
 
@@ -34,9 +39,10 @@ class ProductsController extends Controller
         $request->validate([
             'name' => 'required|min:1|max:10',
             'description' => 'required',
+            'category'=>'required',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-    
+        Log::error("product not found");
         if ($request->hasFile('image')) {
             $manager = new ImageManager(new Driver());
     
@@ -51,6 +57,7 @@ class ProductsController extends Controller
             $product = ProductsModel::create([
                 'name' => $request->name,
                 'description' => $request->description,
+                'category_id' => $request->category,
                 'image' => $save_url,
             ]);
     
@@ -60,6 +67,7 @@ class ProductsController extends Controller
                     'id' => $product->id,
                     'name' => $product->name,
                     'description' => $product->description,
+                    'category' =>category::where('id',$request->category)->value('categoryname'),
                     'image' => asset($product->image),
                 ]
             ]);
@@ -89,6 +97,7 @@ class ProductsController extends Controller
         $request->validate([
             'name' => 'required|min:1|max:10',
             'description' => 'required',
+            'category'=>'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
     
@@ -96,6 +105,7 @@ class ProductsController extends Controller
     
         $product->name = $request->name;
         $product->description = $request->description;
+        $product->category_id = $request->category;
     
         if ($request->hasFile('image')) {
             $manager = new ImageManager(new Driver());
@@ -131,6 +141,7 @@ class ProductsController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'description' => $product->description,
+                'category' =>category::where('id',$request->category)->value('categoryname'),
                 'image' => asset($product->image),
             ]
         ]);

@@ -45,3 +45,5 @@ require __DIR__.'/auth.php';
 // admin routes --------------------
 Route::get('/dashboard',[admincontroller::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/viewproduct', [admincontroller::class, 'viewproduct'])->name('viewproduct');
+Route::get('/users', [admincontroller::class, 'users'])->name('users');
+Route::get('/settings', [admincontroller::class, 'settings'])->name('settings');
