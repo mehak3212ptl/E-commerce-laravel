@@ -62,18 +62,18 @@
       <div class="card-container">
         <!-- Card 1 -->
         <div class="card card1">
-          <h3>10000</h3>
+          <h3>{{$countproducts}}</h3>
           <p>Total-Products </p>
         </div>
         <!-- Card 2 -->
         <div class="card card2">
-          <h3>500+</h3>
+          <h3>{{$user}}</h3>
           <p>users</p>
         </div>
         <!-- Card 3 -->
         <div class="card card3">
-          <h3>2000+</h3>
-          <p>clients</p>
+          <h3>{{$products}}</h3>
+          <p>categories</p>
         </div>
         <!-- Card 4 -->
         <div class="card card4">

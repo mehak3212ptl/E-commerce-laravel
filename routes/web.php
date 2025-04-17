@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\TagproductController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,10 +16,13 @@ use App\Http\Controllers\adminController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Route::middleware(['auth', 'verified', 'preventback'])->group(function () {
+// Route::get('/', function () {
+//     return view('welcome');});
+// });
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('welcome');});
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -43,7 +48,15 @@ require __DIR__.'/auth.php';
 
 
 // admin routes --------------------
+Route::middleware(['auth', 'verified', 'preventback'])->group(function () {
 Route::get('/dashboard',[admincontroller::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/viewproduct', [admincontroller::class, 'viewproduct'])->name('viewproduct');
 Route::get('/users', [admincontroller::class, 'users'])->name('users');
 Route::get('/settings', [admincontroller::class, 'settings'])->name('settings');
+});
+
+// many to many relations 
+Route::get('add-tag', [TagController::class, 'add_tags']);
+Route::get('add-tagproduct', [TagproductController::class, 'add_tagproduct']);
+Route::get('show-tags/{id}', [TagController::class, 'show_tags']);
+Route::get('show-tagproduct/{id}', [TagproductController::class, 'show_tagproduct']);

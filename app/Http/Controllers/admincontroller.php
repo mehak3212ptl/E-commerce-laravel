@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\ProductsModel;
 
@@ -10,7 +11,11 @@ class admincontroller extends Controller
     
     public function index()
     {  
-    return view('admincomponents.cards') ;
+    $products1 = ProductsModel::latest()->get();
+    $countproducts=$products1->count();
+    $user=User::get()->count();
+    $products = ProductsModel::with('category')->get()->count();
+    return view('admincomponents.cards',compact('countproducts','user','products')) ;
     }
 
     public function users()
@@ -24,9 +29,10 @@ class admincontroller extends Controller
 
     public function viewproduct()
     {
-    // $products = ProductsModel::latest()->get();
+    $products1 = ProductsModel::latest()->get();
     $products = ProductsModel::with('category')->get();
-    return view('admincomponents.viewproduct', compact('products')) ;
+    
+    return view('admincomponents.viewproduct', compact('products','products1')) ;
     }
     
     
