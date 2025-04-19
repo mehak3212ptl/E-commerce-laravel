@@ -194,6 +194,7 @@ body {
     <a href="{{route('dashboard')}}"><i class="fas fa-home"></i> Dashboard</a>
     <a href="{{route('users')}}"><i class="fas fa-user"></i> Users</a>
     <a href="{{route('viewproduct')}}"><i class="fa fa-product-hunt"></i> Products</a>
+    <a href="{{route('hero')}}"><i class="fas fa-user"></i>Banner</a>
     <a href="{{route('settings')}}"><i class="fas fa-cogs"></i> Settings</a>
     
   </div>

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\HeroController;
+use App\Http\Controllers\Usercontroller;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductsController;
@@ -21,9 +23,10 @@ use App\Http\Controllers\TagproductController;
 //     return view('welcome');});
 // });
 
-Route::get('/', function () {
-    return view('welcome');});
+// Route::get('/', function () {
+//     return view('welcome');});
 
+Route::get('/',[Usercontroller::class,'index']);
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
@@ -51,6 +54,7 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth', 'verified', 'preventback'])->group(function () {
 Route::get('/dashboard',[admincontroller::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/viewproduct', [admincontroller::class, 'viewproduct'])->name('viewproduct');
+Route::get('/hero', [HeroController::class, 'hero'])->name('hero');
 Route::get('/users', [admincontroller::class, 'users'])->name('users');
 Route::get('/settings', [admincontroller::class, 'settings'])->name('settings');
 });
@@ -60,3 +64,13 @@ Route::get('add-tag', [TagController::class, 'add_tags']);
 Route::get('add-tagproduct', [TagproductController::class, 'add_tagproduct']);
 Route::get('show-tags/{id}', [TagController::class, 'show_tags']);
 Route::get('show-tagproduct/{id}', [TagproductController::class, 'show_tagproduct']);
+
+// hero banner 
+Route::prefix('hero')->group(function(){
+    Route::post('/save-item', [HeroController::class, 'store'])->name('hero.store');
+    Route::get('/{id}/edit',[HeroController::class, 'edit'])->name('hero.edit');
+    Route::post('/{id}/update', [HeroController::class, 'update'])->name('hero.update');
+    Route::delete('/delete/{id}', [HeroController::class, 'delete'])->name('hero.delete');
+    Route::post('/toggle-status/{id}', [HeroController::class, 'toggleStatus'])->name('hero.toggle');
+
+});

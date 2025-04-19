@@ -22,10 +22,12 @@ class admincontroller extends Controller
     {  
     return view('admincomponents.users') ;
     }
+
     public function settings()
     {  
     return view('admincomponents.settings') ;
     }
+    
 
     public function viewproduct()
     {
