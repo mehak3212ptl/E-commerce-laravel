@@ -7,8 +7,10 @@
         <title>Laravel</title>
 
         <!-- Fonts -->
+         
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+        
 
         <!-- Styles -->
         <style>
@@ -30,27 +32,15 @@
                     @endauth
                 </div>
             @endif
-
+            
+            
             <div class="max-w-7xl mx-auto p-6 lg:p-8">
-            <div class="row">
-    @forelse($activeHeroes as $hero)
-        <div class="col-md-4">
-            <div class="card mb-3">
-                @if($hero->image)
-                    <img src="{{ asset('storage/hero_images/' . $hero->image) }}" class="card-img-top" alt="{{ $hero->name }}">
-                @endif
-                <div class="card-body">
-                    
-                    <p>{{ $hero->description }}</p>
-                </div>
+          
+                
+                   
+                
+            
             </div>
-        </div>
-    @empty
-        <p>No active heroes found.</p>
-    @endforelse
-</div>
-
-
         </div>
     </body>
 </html>

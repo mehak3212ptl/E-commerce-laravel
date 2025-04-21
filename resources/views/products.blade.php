@@ -10,12 +10,38 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css">
 
+<!-- DataTables Buttons Extension CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.dataTables.css">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+<!-- DataTables core -->
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+
+<!-- DataTables Buttons Extension -->
+<script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
+
+<!-- JSZip for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<!-- pdfmake for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.8.4/axios.min.js" integrity="sha512-2A1+/TAny5loNGk3RBbk11FwoKXYOMfAK6R7r4CpQH7Luz4pezqEGcfphoNzB7SM4dixUoJsKkBsB6kg+dNE2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Document</title>
 </head>
 <body>
+    <div class="main">
 <div class="container mt-5">
     <h2 class="mb-4">Product List</h2>
 
@@ -28,7 +54,7 @@
     </div>
 
     <div class="table-responsive shadow rounded-4 overflow-hidden">
-    <table class="table table-hover align-middle mb-0 table-striped">
+    <table class="table table-hover align-middle mb-0 table-striped display nowrap" id="bannerTable">
         <thead class="table-dark">
             <tr>
                 <th scope="col">#</th>
@@ -45,7 +71,7 @@
                 <td>{{ $product->id}}</td>
                 <td class="fw-semibold">{{ $product->name }}</td>
                 <td>{{ $product->description }}</td>
-                <td>{{ $product->category->categoryname }}</td>
+                
                 <td>
                     @if($product->image)
                     <img src="{{ asset($product->image) }}"
@@ -56,7 +82,7 @@
                     <span class="text-muted fst-italic">No Image</span>
                     @endif
                 </td>
-                
+                <td>{{ $product->category->categoryname }}</td>
                 <td>
                     <button class="btn btn-warning btn-sm editProductBtn mb-1"
                         data-id="{{ $product->id }}"
@@ -79,6 +105,7 @@
     </table>
 </div>
  
+</div>
 </div>
 
 
@@ -108,7 +135,9 @@
                         <select name="category" class="form-control" required>
                         <option value="1">Electronics</option>
                         <option value="2">Cosmetics</option>
-                       
+                        <option value="6">Grocery</option>
+                        <option value="5">Stationery</option>
+                        <option value="7">Toys</option>
                         </select>
                         </div> 
                     <div class="form-group mb-3">
@@ -152,6 +181,9 @@
                         <select id="editcategory" name="category" class="form-control" required>
                         <option value="1">Electronics</option>
                         <option value="2">Cosmetics</option>
+                        <option value="6">Grocery</option>
+                        <option value="5">Stationery</option>
+                        <option value="7">Toys</option>
                        
                         </select>
                         </div>
@@ -198,6 +230,14 @@
     <!-- Bootstrap & jQuery -->
     
     <script>
+// datatabels 
+new DataTable('#bannerTable', {
+    layout: {
+        topStart: {
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+   }
+}
+});
 
             // $('#addProductModal').modal('hide'); // Close modal
 

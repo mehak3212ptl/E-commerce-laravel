@@ -26,7 +26,15 @@ use App\Http\Controllers\TagproductController;
 // Route::get('/', function () {
 //     return view('welcome');});
 
-Route::get('/',[Usercontroller::class,'index']);
+Route::get('/',[Usercontroller::class,'index'])->name('/');
+Route::get('about',[Usercontroller::class,'about'])->name('about');
+Route::get('contact',[Usercontroller::class,'contact'])->name('contact');
+Route::get('blogs',[Usercontroller::class,'blogs'])->name('blogs');
+Route::get('service',[Usercontroller::class,'service'])->name('service');
+
+Route::get('/products/filter/{category_id}', [Usercontroller::class, 'filter'])->name('products.filter');
+
+
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');

@@ -139,7 +139,7 @@
                     </div>
                     <!-- <div class="form-group mb-3">
                     <label >Choose a :</lastatusbel>
-
+w
                         <select name="status" class="form-control" required>
                         <option value="1">Active </option>
                         <option value="0">Inactive</option>
@@ -335,7 +335,7 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success: function(response) {
                     $('#message').html(`<div class="alert alert-success">${response.success}</div>`);
-                    $('#editheroForm')[hero0].reset();
+                    $('#editheroForm')[0].reset();
                     $('#editheroModal').modal('hide');
                     $(`#hero_${response.hero.id} td:nth-child(3)`).text(response.hero.description);
                     $(`#hero_${response.hero.id} td:nth-child(3)`).text(response.hero.status);

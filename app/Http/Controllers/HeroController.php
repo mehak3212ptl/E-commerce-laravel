@@ -116,7 +116,7 @@ class HeroController extends Controller
                 'id' => $hero->id,
                
                 'description' => $hero->description,
-                 'status' =>'0',
+                'status' =>'0',
                 'image' => asset($hero->image),
             ]
         ]);
