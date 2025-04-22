@@ -7,6 +7,8 @@ use App\Http\Controllers\Usercontroller;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductsController;
+
+use App\Http\Controllers\razorpaycontroller;
 use App\Http\Controllers\TagproductController;
 /*
 |--------------------------------------------------------------------------
@@ -26,18 +28,24 @@ use App\Http\Controllers\TagproductController;
 // Route::get('/', function () {
 //     return view('welcome');});
 
-Route::get('/',[Usercontroller::class,'index'])->name('/');
+
+
+// User interface 
+Route::get('/',[Usercontroller::class,'index1'])->name('/');
 Route::get('about',[Usercontroller::class,'about'])->name('about');
 Route::get('contact',[Usercontroller::class,'contact'])->name('contact');
 Route::get('blogs',[Usercontroller::class,'blogs'])->name('blogs');
 Route::get('service',[Usercontroller::class,'service'])->name('service');
-
 Route::get('/products/filter/{category_id}', [Usercontroller::class, 'filter'])->name('products.filter');
+Route::get('detail/{id}',[Usercontroller::class,'detail'])->name('detail');
 
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/wishlist', [Usercontroller::class, 'index'])->name('wishlist');
+Route::post('/wishlist/add/{id}', [Usercontroller::class, 'add'])->name('wishlist.add');
+Route::post('/wishlist/remove/{id}', [Usercontroller::class, 'remove'])->name('wishlist.remove');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -47,7 +55,6 @@ Route::middleware('auth')->group(function () {
 
 // ----------------------Ajax crud routes -------------------
 Route::get('index1', [ProductsController::class, 'index'])->name('product.index');
-
 Route::prefix('products')->group(function(){
     Route::post('/save-item', [ProductsController::class, 'store'])->name('product.store');
     Route::get('/{id}/edit',[ProductsController::class, 'edit'])->name('product.edit');
@@ -82,3 +89,7 @@ Route::prefix('hero')->group(function(){
     Route::post('/toggle-status/{id}', [HeroController::class, 'toggleStatus'])->name('hero.toggle');
 
 });
+
+Route::post('/razorpay-payment', [razorpaycontroller::class, 'payment'])->name('razorpay.payment');
+
+Route::get('/order-success/{orderId}', [razorpaycontroller::class, 'orderSuccess'])->name('order.success');

@@ -61,6 +61,7 @@
                 <th scope="col">Name</th>
                 <th scope="col">Description</th>
                 <th scope="col">Image</th>
+                <th scope="col">Price</th>
                 <th scope="col">Category</th>
                 <th scope="col">Actions</th>
             </tr>
@@ -82,6 +83,7 @@
                     <span class="text-muted fst-italic">No Image</span>
                     @endif
                 </td>
+                <td>{{ $product->price}}</td>
                 <td>{{ $product->category->categoryname }}</td>
                 <td>
                     <button class="btn btn-warning btn-sm editProductBtn mb-1"
@@ -130,6 +132,11 @@
                         <span class="text-danger error-text description_error"></span>
                     </div>
                     <div class="form-group mb-3">
+                        <label>Price:</label>
+                        <input type="text" name="price" class="form-control" required />
+                        <span class="text-danger error-text name_error"></span>
+                    </div>
+                    <div class="form-group mb-3">
                     <label >Choose a category:</label>
 
                         <select name="category" class="form-control" required>
@@ -176,6 +183,11 @@
                         <span class="text-danger error-text description_error"></span>
                     </div>
                     <div class="form-group mb-3">
+                        <label>Price:</label>
+                        <input type="text" name="price" id="editProductPrice" class="form-control" required />
+                        <span class="text-danger error-text name_error"></span>
+                    </div>
+                    <div class="form-group mb-3">
                     <label >Choose a category:</label>
 
                         <select id="editcategory" name="category" class="form-control" required>
@@ -200,7 +212,7 @@
                         <input type="file" name="image" class="form-control" accept="image/*" />
                         <span class="text-danger error-text image_error"></span>
                     </div>
-
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Update Product</button>
@@ -277,6 +289,7 @@ new DataTable('#bannerTable', {
                         <td>${response.product.index}</td>
                         <td>${response.product.name}</td>
                         <td>${response.product.description}</td>
+                        <td>${response.product.price}</td>
                         <td>${response.product.category}</td>
                         <td><img src="${response.product.image}" class="product-img" alt="Image"></td>
                         <td><button class="btn btn-warning btn-sm editProductBtn" data-id="${response.product.id}">Edit</button>
@@ -309,6 +322,7 @@ new DataTable('#bannerTable', {
                     $('#editProductId').val(response.product.id);
                     $('#editProductName').val(response.product.name);
                     $('#editProductDescription').val(response.product.description);
+                    $('#editProductPrice').val(response.product.price);
                     $('#editcategory').val(response.product.category_id);
                     // Set the image preview
                     if (response.product.image) {
@@ -341,6 +355,7 @@ new DataTable('#bannerTable', {
                     $('#editProductModal').modal('hide');
                     $(`#product_${response.product.id} td:nth-child(2)`).text(response.product.name);
                     $(`#product_${response.product.id} td:nth-child(3)`).text(response.product.description);
+                    $(`#product_${response.product.id} td:nth-child(3)`).text(response.product.price);
                     $(`#product_${response.product.id} td:nth-child(3)`).text(response.product.category_id);
                     $(`#product_${response.product.id} td:nth-child(4) img`).attr('src', response.product.image);
                 },

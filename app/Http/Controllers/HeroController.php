@@ -24,6 +24,7 @@ class HeroController extends Controller
 
         $request->validate([
             'description' => 'required',
+            'title'=>'required',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
         Log::error("product not found");
@@ -41,6 +42,7 @@ class HeroController extends Controller
             $hero = hero::create([
 
                 'description' => $request->description,
+                'title'=>$request->title,
                 'url' => $save_url,
             ]);
     
@@ -49,6 +51,7 @@ class HeroController extends Controller
                 'hero' => [
                     'id' => $hero->id,
                     'description' => $hero->description,
+                    'title'=> $hero->title,
                     'status' =>'0',
                     'image' => asset($hero->url),
                 ]
@@ -74,6 +77,7 @@ class HeroController extends Controller
         $request->validate([
 
             'description' => 'required',
+            'title'=>'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
     
@@ -116,6 +120,7 @@ class HeroController extends Controller
                 'id' => $hero->id,
                
                 'description' => $hero->description,
+                'title'=> $hero->title,
                 'status' =>'0',
                 'image' => asset($hero->image),
             ]

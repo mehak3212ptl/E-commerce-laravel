@@ -9,7 +9,8 @@
       <!-- Left Side: Text Content -->
       <div class="col-md-6 px-5">
         <h1 class="display-4 fw-bold">Offer!</h1>
-        <h1 class="display-4 fw-bold">We Are Providing the Best Services !!!</h1>
+        <h1 class="display-4 fw-bold">We Are Providing The Best Services !!</h1>
+        <h1 class="display-4 fw-bold">{{ $activeHeroes->title }}</h1>
         <p class="lead">{{ $activeHeroes->description }}</p>
         <a href="{{ route('service') }}" class="btn btn-outline-dark mt-3">View Products</a>
       </div>

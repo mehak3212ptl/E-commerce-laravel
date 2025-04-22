@@ -47,78 +47,84 @@
     <title>Document</title>
 </head>
 <body>
+<div class="main">
 <div class="container mt-5">
-    <h2 class="mb-4">Banner Image</h2>
+    <div class="row justify-content-center">
+        <div class="col-12">
 
-    <!-- Add Product Button -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addheroModal">
-            <i class="fas fa-plus me-1"></i> Add Image
-        </button>
-        <div id="message" class="flex-grow-1 text-end"></div>
+            <h2 class="mb-4">Banner Image</h2>
+
+            <!-- Add Product Button -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addheroModal">
+                    <i class="fas fa-plus me-1"></i> Add Image
+                </button>
+                <div id="message" class="flex-grow-1 text-end"></div>
+            </div>
+
+            <!-- Table Wrapper -->
+            <div style="overflow-x: auto;">
+                <table class="table table-hover align-middle mb-0 table-striped display nowrap w-100" id="Herotable" style="min-width: 1000px;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="heroTable" class="bg-white">
+                        @forelse($heros as $index => $hero)
+                        <tr id="hero_{{ $hero->id }}">
+                            <td>{{ $hero->id }}</td>
+                            <td>{{ $hero->title }}</td>
+                            <td>{{ $hero->description }}</td>
+                            <td>
+                                @if($hero->url)
+                                <img src="{{ asset($hero->url) }}"
+                                     style="width: 100px; height: 60px; object-fit: cover; border-radius: 0.5rem; cursor: pointer;"
+                                     class="product-img shadow-sm"
+                                     alt="Image">
+                                @else
+                                <span class="text-muted fst-italic">No Image</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input toggleStatus" type="checkbox" role="switch"
+                                           data-id="{{ $hero->id }}"
+                                           {{ $hero->status ? 'checked' : '' }}>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-warning btn-sm editheroBtn mb-1"
+                                        data-id="{{ $hero->id }}"
+                                        data-bs-toggle="modal" data-bs-target="#editheroModal">
+                                    <i class="fas fa-edit me-1"></i>Edit
+                                </button><br>
+                                <button class="btn btn-danger btn-sm deleteheroBtn"
+                                        data-id="{{ $hero->id }}">
+                                    <i class="fas fa-trash-alt me-1"></i>Delete
+                                </button>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No products found</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div> <!-- overflow-x wrapper -->
+        </div>
     </div>
-
-    <div class="table-responsive shadow rounded-4 overflow-hidden">
-    <table class="table table-hover align-middle mb-0 table-striped display nowrap" id='Herotable'>
-        <thead class="table-dark">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Description</th>
-                <th scope="col">Image</th>
-                <th scope="col">Status</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody id="heroTable" class="bg-white">
-        @forelse($heros as $index => $hero)
-            <tr id="hero_{{ $hero->id }}">
-                <td>{{$hero->id}}</td>
-                <td>{{$hero->description }}</td>
-                <td>
-                    @if($hero->url)
-                    <img src="{{ asset($hero->url) }}"
-                         style="width: 100px; height: 60px; object-fit: cover; border-radius: 0.5rem; cursor: pointer;"
-                         class="product-img shadow-sm"
-                         alt="Image">
-                    @else
-                    <span class="text-muted fst-italic">No Image</span>
-                    @endif
-                </td>
-                <td>
-                <div class="form-check form-switch">
-    <input
-      class="form-check-input toggleStatus"
-      type="checkbox"
-      role="switch"
-      data-id="{{ $hero->id }}"
-      {{ $hero->status ? 'checked' : '' }}
-    >
-  </div>
-</td>
-
-                <td>
-                    <button class="btn btn-warning btn-sm editheroBtn mb-1"
-                        data-id="{{$hero->id }}"
-                        data-bs-toggle="modal" data-bs-target="#editheroModal">
-                        <i class="fas fa-edit me-1"></i>Edit
-                    </button>
-                    <br>
-                    <button class="btn btn-danger btn-sm   deleteheroBtn"
-                        data-id="{{$hero->id }}">
-                        <i class="fas fa-trash-alt me-1"></i>Delete
-                    </button>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="6" class="text-center text-muted py-4">No products found</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
 </div>
- 
 </div>
+
+
+
 
 
     <!-- Add Product Modal -->
@@ -131,6 +137,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                <div class="form-group mb-3">
+                        <label>Title:</label>
+                        <textarea name="title" class="form-control" required></textarea>
+                        <span class="text-danger error-text description_error"></span>
+                    </div>
                     
                     <div class="form-group mb-3">
                         <label>Description:</label>
@@ -172,7 +183,12 @@ w
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    
+                <div class="form-group mb-3">
+                        <label>Title:</label>
+                        <textarea name="title" id="editheroTitle" class="form-control"
+                            required></textarea>
+                        <span class="text-danger error-text description_error"></span>
+                    </div>
                     <div class="form-group mb-3">
                         <label>Description:</label>
                         <textarea name="description" id="editheroDescription" class="form-control"
@@ -275,6 +291,7 @@ w
         });
                     let newRow = `<tr id="hero_${response.hero.id}">
                         <td>${response.hero.id}</td>
+                        <td>${response.hero.title}</td>
                         <td>${response.hero.description}</td>                      
                         <td><img src="${response.hero.image}" class="product-img" alt="Image" style="width: 100px; height: 60px; object-fit: cover; border-radius: 0.5rem; cursor: pointer;"></td>
                         <td>${response.hero.status}</td>
@@ -306,6 +323,7 @@ w
                 type: 'GET',
                 success: function(response) {
                     $('#editheroId').val(response.hero.id);
+                    $('#editheroTitle').val(response.hero.title);
                     $('#editheroDescription').val(response.hero.description);
                     $('#editstatus').val(response.hero.status);
                     // Set the image preview
@@ -337,6 +355,7 @@ w
                     $('#message').html(`<div class="alert alert-success">${response.success}</div>`);
                     $('#editheroForm')[0].reset();
                     $('#editheroModal').modal('hide');
+                    $(`#hero_${response.hero.id} td:nth-child(3)`).text(response.hero.title);
                     $(`#hero_${response.hero.id} td:nth-child(3)`).text(response.hero.description);
                     $(`#hero_${response.hero.id} td:nth-child(3)`).text(response.hero.status);
                     $(`#hero_${response.hero.id} td:nth-child(4) img`).attr('src', response.hero.image);

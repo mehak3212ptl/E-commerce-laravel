@@ -34,15 +34,16 @@ class ProductsController extends Controller
 
     public function store(Request $request)
     {
-        Log::error("Product not found with ID");
+        Log::error("heeeehehe");
 
         $request->validate([
             'name' => 'required|min:1|max:10',
             'description' => 'required',
+            'price'=>'required',
             'category'=>'required',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-        Log::error("product not found");
+       
         if ($request->hasFile('image')) {
             $manager = new ImageManager(new Driver());
     
@@ -57,6 +58,7 @@ class ProductsController extends Controller
             $product = ProductsModel::create([
                 'name' => $request->name,
                 'description' => $request->description,
+                'price'=> $request->price,
                 'category_id' => $request->category,
                 'image' => $save_url,
             ]);
@@ -67,6 +69,7 @@ class ProductsController extends Controller
                     'id' => $product->id,
                     'name' => $product->name,
                     'description' => $product->description,
+                    'price'=> $product->price,
                     'category' =>category::where('id',$request->category)->value('categoryname'),
                     'image' => asset($product->image),
                 ]
@@ -97,6 +100,7 @@ class ProductsController extends Controller
         $request->validate([
             'name' => 'required|min:1|max:10',
             'description' => 'required',
+            'price'=>'required',
             'category'=>'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -105,6 +109,7 @@ class ProductsController extends Controller
     
         $product->name = $request->name;
         $product->description = $request->description;
+        $product->price=$request->price;
         $product->category_id = $request->category;
     
         if ($request->hasFile('image')) {
@@ -141,6 +146,7 @@ class ProductsController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'description' => $product->description,
+                'price'=>$product->price,
                 'category' =>category::where('id',$request->category)->value('categoryname'),
                 'image' => asset($product->image),
             ]

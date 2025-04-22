@@ -129,6 +129,9 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ route('contact') }}">Contact</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('wishlist') }}">Wishlist</a>
+        </li>
       </ul>
 
       <!-- Right Side: Search + Login/Register + Socials -->
