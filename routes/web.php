@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductsController;
 
 use App\Http\Controllers\razorpaycontroller;
+use App\Http\Controllers\UseraboutController;
 use App\Http\Controllers\TagproductController;
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,7 @@ use App\Http\Controllers\TagproductController;
 
 // User interface 
 Route::get('/',[Usercontroller::class,'index1'])->name('/');
-Route::get('about',[Usercontroller::class,'about'])->name('about');
+Route::get('aboutus',[Usercontroller::class,'about'])->name('aboutus');
 Route::get('contact',[Usercontroller::class,'contact'])->name('contact');
 Route::get('blogs',[Usercontroller::class,'blogs'])->name('blogs');
 Route::get('service',[Usercontroller::class,'service'])->name('service');
@@ -70,6 +71,7 @@ Route::middleware(['auth', 'verified', 'preventback'])->group(function () {
 Route::get('/dashboard',[admincontroller::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/viewproduct', [admincontroller::class, 'viewproduct'])->name('viewproduct');
 Route::get('/hero', [HeroController::class, 'hero'])->name('hero');
+
 Route::get('/users', [admincontroller::class, 'users'])->name('users');
 Route::get('/settings', [admincontroller::class, 'settings'])->name('settings');
 });
@@ -89,7 +91,16 @@ Route::prefix('hero')->group(function(){
     Route::post('/toggle-status/{id}', [HeroController::class, 'toggleStatus'])->name('hero.toggle');
 
 });
-
+// Razor pay code 
 Route::post('/razorpay-payment', [razorpaycontroller::class, 'payment'])->name('razorpay.payment');
-
 Route::get('/order-success/{orderId}', [razorpaycontroller::class, 'orderSuccess'])->name('order.success');
+
+// About us 
+
+
+Route::get('/about', [UseraboutController::class, 'index'])->name('about');
+Route::get('/about/create', [UseraboutController::class, 'create']);
+Route::post('/about', [UseraboutController::class, 'store']);
+Route::get('/about/{id}/edit', [UseraboutController::class, 'edit']);
+Route::post('/about/{id}/update', [UseraboutController::class, 'update']);
+Route::get('/about/{id}/delete', [UseraboutController::class, 'delete']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\hero;
 use App\Models\category;
+use App\Models\Userabout;
 use Illuminate\Http\Request;
 use App\Models\ProductsModel;
 
@@ -17,7 +18,9 @@ public function index1()
 }
 
 public function about(){
-    return view('usercomponents/about');       
+
+    $about = Userabout::latest()->first();
+    return view('usercomponents/about',compact('about'));       
 }
 
 public function contact(){

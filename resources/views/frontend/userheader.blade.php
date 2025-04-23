@@ -118,7 +118,7 @@
           <a class="nav-link active" aria-current="page" href="{{ route('/') }}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('about') }}">About</a>
+          <a class="nav-link" href="{{ route('aboutus') }}">About</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ route('service') }}">Products</a>
