@@ -3,13 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\HeroController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Usercontroller;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProductsController;
 
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\razorpaycontroller;
 use App\Http\Controllers\UseraboutController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\SpatieUserController;
 use App\Http\Controllers\TagproductController;
 /*
 |--------------------------------------------------------------------------
@@ -104,3 +107,22 @@ Route::post('/about', [UseraboutController::class, 'store']);
 Route::get('/about/{id}/edit', [UseraboutController::class, 'edit']);
 Route::post('/about/{id}/update', [UseraboutController::class, 'update']);
 Route::get('/about/{id}/delete', [UseraboutController::class, 'delete']);
+
+
+
+
+// role and permission 
+
+// PERMISSIOM 
+Route::resource('permissions',PermissionController::class);
+Route::get('permissions/{permissionId}/delete',[PermissionController::class,'destroy']);
+
+// ROLES 
+Route::resource('roles',RoleController::class);
+Route::get('roles/{roleId}/delete',[RoleController::class,'destroy']);
+
+Route::get('roles/{roleId}/give-permissions',[RoleController::class,'addPermissionToRole']);
+Route::put('roles/{roleId}/give-permissions',[RoleController::class,'givePermissionToRole']);
+
+
+Route::resource('users',SpatieUserController::class);
