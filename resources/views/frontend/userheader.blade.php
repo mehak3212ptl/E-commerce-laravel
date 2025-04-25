@@ -1,49 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    <title>Document</title>
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ route('/') }}">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('about') }}">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('contact') }}">Contact</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('service') }}">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('blogs') }}">Blogs</a>
-        </li>
-       
-        
-      </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
-</body>
-</html> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,10 +62,10 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
       <span class="navbar-toggler-icon"></span>
     </button>
-
+    
     <!-- Collapsible Content -->
     <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
-
+   
       <!-- Left Side: Navigation -->
       <ul class="navbar-nav mb-2 mb-lg-0">
       <li class="nav-item">
@@ -132,30 +86,79 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ route('wishlist') }}">Wishlist</a>
         </li>
+        <li class="nav-item">
+        @auth
+        @if((auth()->user()->hasRole('super-admin'))||(auth()->user()->hasRole('Admin')))  
+  
+                    <x-nav-link   class="nav-link" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+                
+                @endif
+        @endauth
+        </li>
       </ul>
+     
+      @if (Route::has('login'))
+      @auth
+<!-- Right Side: Search + User Dropdown + Socials -->
+<div class="d-flex align-items-center right-section">
 
-      <!-- Right Side: Search + Login/Register + Socials -->
-      <div class="d-flex align-items-center right-section">
-        <!-- Search -->
-        <form class="d-flex me-3">
-          <input class="form-control form-control-sm" type="search" placeholder="Search" aria-label="Search">
+  <!-- Search -->
+  <form class="d-flex me-3">
+    <input class="form-control form-control-sm" type="search" placeholder="Search" aria-label="Search">
+  </form>
+
+  <!-- User Dropdown -->
+  <div class="dropdown me-3">
+    <a class="btn btn-light dropdown-toggle fw-bold text-dark" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      {{ Auth::user()->name }}
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+      <li>
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <button type="submit" class="dropdown-item text-danger">Logout</button>
         </form>
+      </li>
+    </ul>
+  </div>
 
-        <!-- Auth Links -->
-        <div class="auth-links d-flex align-items-center me-3">
-          <a href="{{ route('login') }}">Login</a>
-          <a href="{{ route('register') }}">Register</a>
-        </div>
+  <!-- Social Icons -->
+  <div class="social-icons d-flex align-items-center">
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-telegram-plane"></i></a>
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-twitter"></i></a>
+  </div>
+</div>
+@else
+<!-- Auth Links (Login/Register) -->
+<div class="d-flex align-items-center right-section">
+  <form class="d-flex me-3">
+    <input class="form-control form-control-sm" type="search" placeholder="Search" aria-label="Search">
+  </form>
 
-        <!-- Social Icons -->
-        <div class="social-icons d-flex align-items-center">
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-telegram-plane"></i></a>
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-        </div>
-      </div>
+  <div class="auth-links d-flex align-items-center me-3">
+    <a href="{{ route('login') }}">Login</a>
+    @if (Route::has('register'))
+    <a href="{{ route('register') }}">Register</a>
+    @endif
+  </div>
 
+  <!-- Social Icons -->
+  <div class="social-icons d-flex align-items-center">
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-telegram-plane"></i></a>
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-twitter"></i></a>
+  </div>
+</div>
+@endauth
+
+        @endif
+
+        
     </div>
   </div>
 </nav>

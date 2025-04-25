@@ -74,7 +74,7 @@ body {
   display: block;
   color: white;
   text-decoration: none;
-  padding: 35px 60px;
+  padding: 15px 60px;
   transition: background 0.3s;
 }
 
@@ -180,6 +180,67 @@ body {
     width: 100%;
   }
 }
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode .top-navbar,
+.dark-mode .footer {
+  background-color: #1f1f1f;
+  color: #fff;
+}
+
+.dark-mode .sidebar {
+  background-color: #181818;
+}
+
+.dark-mode .sidebar a,
+.dark-mode .sidebar form button {
+  color: #e0e0e0;
+}
+
+.dark-mode .sidebar a:hover {
+  background-color: #2a2a2a;
+}
+
+.dark-mode .header {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.dark-mode .search-box {
+  border-color: #444;
+}
+
+.dark-mode .search-box input {
+  background: transparent;
+  color: #fff;
+}
+.top-navbar {
+  /* background-color: #212529; */ /* REMOVE this */
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.sidebar {
+  width: 250px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.hidden {
+  width: 0;
+  overflow: hidden;
+}
+
+
 </style>
 </head>
 @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -189,22 +250,64 @@ body {
  @include('layouts.navigation')
 
   <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>Admin</h2>
+  <div class="sidebar" id="sidebar">
+  <div class="flex items-center">
+    <i id="sidebarToggle" class="bi bi-list" style="font-size: 24px; color: white; cursor: pointer; margin-right: 10px; margin-left:20%"></i>
+    <span class="text-white text-xl font-bold">Admin</span>
+  </div>
+   
     <a href="{{route('dashboard')}}"><i class="fas fa-home"></i> Dashboard</a>
-    <a href="{{route('users')}}"><i class="fas fa-user"></i> Users</a>
-    <a href="{{route('viewproduct')}}"><i class="fa fa-product-hunt"></i> Products</a>
-    <a href="{{route('about')}}"><i class="fas fa-user"></i>About-us  Control</a>
-    <a href="{{route('hero')}}"><i class="fas fa-user"></i>Banner Control</a>
-    <a href="{{route('settings')}}"><i class="fas fa-cogs"></i> Settings</a>
-    
+    <a href="{{route('viewproduct')}}"></i> Products</a>
+    <a href="{{route('about')}}">About-us </a>
+    <a href="{{route('hero')}}">Banner </a>
+    @auth
+  @if(auth()->user()->hasRole('super-admin'))
+    <a href="{{ url('permissions') }}">Permissions</a>
+    <a href="{{ url('roles') }}">Roles</a>
+    <a href="{{ url('users') }}">Users</a>
+    @endif
+  @endauth
+  <a href="{{route('settings')}}">Settings</a>
+  <a href="#" id="modeToggle" class="bi bi-moon-stars-fill" style="padding-left: 60px; padding-top: 15px;">on | off</a>
+  
   </div>
  
-
+ 
   <!-- Footer -->
   <div class="footer">
     © 2025 Admin Dashboard. All rights reserved.
   </div>
+  <script>
+  const toggleBtn = document.getElementById('modeToggle');
+  const body = document.body;
+
+  // Load mode from localStorage
+  if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    toggleBtn.classList.remove('bi-moon-stars-fill');
+    toggleBtn.classList.add('bi-sun-fill');
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    const isDark = body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    toggleBtn.classList.toggle('bi-moon-stars-fill');
+    toggleBtn.classList.toggle('bi-sun-fill');
+  });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+
+    sidebarToggle.addEventListener('click', function () {
+        sidebar.classList.toggle('hidden');
+    });
+});
+
+
+</script>
 
 
 </body>

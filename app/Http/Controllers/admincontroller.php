@@ -18,10 +18,6 @@ class admincontroller extends Controller
     return view('admincomponents.cards',compact('countproducts','user','products')) ;
     }
 
-    public function users()
-    {  
-    return view('admincomponents.users') ;
-    }
 
     public function settings()
     {  

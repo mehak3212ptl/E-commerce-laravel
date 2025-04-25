@@ -1,3 +1,6 @@
+@extends('adminlayout.adminmaster')
+@section('content')
+<div class="main">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +10,7 @@
     <title>Document</title>
 </head>
 <body>
-    @include('role-permission.nav-links')
+
 <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -29,6 +32,7 @@
                 <th scope="col">Id</th>
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
+                <th scope="col">Roles</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -39,8 +43,15 @@
                <td>{{$user->name}}</td>
                <td>{{$user->email}}</td>
                <td>
+                @if(!empty($user->getRoleNames()))
+                    @foreach($user->getRoleNames() as $rolename)
+                    <label class=" badge bg-primary mx-1"> {{$rolename}}</label>
+                    @endforeach
+                @endif
+               </td>
+               <td>
                 <a href="{{url ('users/'.$user->id.'/edit') }}" class="btn btn-success">Edit</a>
-                <a class="btn btn-danger" href="{{url ('users/'.$user->id.'/delete') }}">Delete</a>
+                <a href="{{url ('users/'.$user->id.'/delete') }}" class="btn btn-danger">Delete</a>
                </td>
             </tr>
             @endforeach
@@ -56,3 +67,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 </body>
 </html>
+</div>
+@endsection

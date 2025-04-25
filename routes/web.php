@@ -42,9 +42,6 @@ Route::get('blogs',[Usercontroller::class,'blogs'])->name('blogs');
 Route::get('service',[Usercontroller::class,'service'])->name('service');
 Route::get('/products/filter/{category_id}', [Usercontroller::class, 'filter'])->name('products.filter');
 Route::get('detail/{id}',[Usercontroller::class,'detail'])->name('detail');
-
-
-
 Route::get('/wishlist', [Usercontroller::class, 'index'])->name('wishlist');
 Route::post('/wishlist/add/{id}', [Usercontroller::class, 'add'])->name('wishlist.add');
 Route::post('/wishlist/remove/{id}', [Usercontroller::class, 'remove'])->name('wishlist.remove');
@@ -70,11 +67,10 @@ require __DIR__.'/auth.php';
 
 
 // admin routes --------------------
-Route::middleware(['auth', 'verified', 'preventback'])->group(function () {
+Route::middleware(['verified', 'preventback',])->group(function () {
 Route::get('/dashboard',[admincontroller::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/viewproduct', [admincontroller::class, 'viewproduct'])->name('viewproduct');
 Route::get('/hero', [HeroController::class, 'hero'])->name('hero');
-
 Route::get('/users', [admincontroller::class, 'users'])->name('users');
 Route::get('/settings', [admincontroller::class, 'settings'])->name('settings');
 });
@@ -99,20 +95,21 @@ Route::post('/razorpay-payment', [razorpaycontroller::class, 'payment'])->name('
 Route::get('/order-success/{orderId}', [razorpaycontroller::class, 'orderSuccess'])->name('order.success');
 
 // About us 
-
-
+Route::group(['middleware'=>'role:super-admin|Admin'],function(){ 
 Route::get('/about', [UseraboutController::class, 'index'])->name('about');
 Route::get('/about/create', [UseraboutController::class, 'create']);
 Route::post('/about', [UseraboutController::class, 'store']);
 Route::get('/about/{id}/edit', [UseraboutController::class, 'edit']);
 Route::post('/about/{id}/update', [UseraboutController::class, 'update']);
 Route::get('/about/{id}/delete', [UseraboutController::class, 'delete']);
-
+});
 
 
 
 // role and permission 
 
+
+Route::group(['middleware'=>'role:super-admin'],function(){ 
 // PERMISSIOM 
 Route::resource('permissions',PermissionController::class);
 Route::get('permissions/{permissionId}/delete',[PermissionController::class,'destroy']);
@@ -126,3 +123,6 @@ Route::put('roles/{roleId}/give-permissions',[RoleController::class,'givePermiss
 
 
 Route::resource('users',SpatieUserController::class);
+Route::get('users/{userId}/delete',[SpatieUserController::class,'destroy']);
+
+});
