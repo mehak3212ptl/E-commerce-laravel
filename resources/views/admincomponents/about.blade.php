@@ -1,14 +1,8 @@
 @extends('adminlayout.adminmaster')
 @section('content')
-<div style="margin-left:200px">
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Post Manager</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jodit@3.24.5/build/jodit.min.css">
-</head>
-<body>
-<div class="main">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jodit@3.24.5/build/jodit.min.css">
+
+<div class="main mx-5">
 <div class="container mt-5">
 <h1 class="mb-4">Banner Image</h1>
 
@@ -85,7 +79,6 @@
             </tbody>
         </table>
     </div>
-</div>
 
 
 
@@ -104,8 +97,7 @@
 
 </script>
 
-</body>
-</html>
+
 
 
 @endsection

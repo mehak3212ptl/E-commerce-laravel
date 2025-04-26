@@ -1,6 +1,6 @@
 @extends('adminlayout.adminmaster')
 @section('content')
-<div class="container py-5" style="margin-left:110px">
+<div class="container py-5" >
     <div class="row g-4">
         @php
             $tiles = [

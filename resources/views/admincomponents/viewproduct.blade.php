@@ -1,6 +1,6 @@
 @extends('adminlayout.adminmaster')
 @section('content')
-<div style="margin-left:200px">
+<div >
 @include('products')
 </div>
    

@@ -1,6 +1,6 @@
 @extends('adminlayout.adminmaster')
 @section('content')
-<div style="margin-left:200px">
+
 
 
 <!DOCTYPE html>
@@ -47,8 +47,8 @@
     <title>Document</title>
 </head>
 <body>
-<div class="main">
-<div class="container mt-5">
+<div class="main mx-5">
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-12">
 

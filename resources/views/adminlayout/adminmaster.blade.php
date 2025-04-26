@@ -14,11 +14,28 @@
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Document</title>
+    <style>
+        .main2{
+            display:flex;
+            height:100%;
+
+        }
+        .content2{
+            flex:1;
+            width:100%;
+            overflow:auto
+
+        }
+    </style>
 </head>
 <body>
-    @include('adminlayout.adminheader')
-    <div class="container mt-4">
-        @yield('content')
+@include('layouts.navigation')
+    <div class="main2">
+        @include('adminlayout.adminheader')
+        <div class=" content2" >
+            @yield('content')
+        </div>
+        
     </div>
 
 

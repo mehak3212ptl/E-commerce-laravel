@@ -57,10 +57,10 @@ body {
   background-color: rgb(15, 15, 15);
   color: white;
   padding: 20px 0;
-  position: fixed;
+  /* position: fixed;
   top: 52px;
   bottom: 50px;
-  left: 0;
+  left: 0; */
   overflow-y: auto;
 }
 
@@ -94,13 +94,13 @@ body {
 }
 
 .main {
-  position: fixed;
+  /* position: fixed;
   top: 52px;
   bottom: 50px;
   left: 220px;
   right: 0;
   padding: 20px;
-  overflow-y: auto;
+  overflow-y: auto; */
 }
 
 .header {
@@ -141,19 +141,7 @@ body {
   cursor: pointer;
 }
 
-.footer {
-  height: 50px;
-  background-color: #212529;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
+
 
 
 /* Responsive Design for Smaller Screens */
@@ -231,14 +219,29 @@ body.dark-mode {
 }
 
 .sidebar {
-  width: 250px;
+  /* width: 200px; */
   transition: all 0.3s ease;
 }
 
 .sidebar.hidden {
-  width: 0;
+  /* width: 0; */
+  display:naone;
   overflow: hidden;
 }
+#sidebarToggle {
+  position: fixed;
+  top: 12px;
+  left: 20px;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  z-index: 1050; /* Make sure it's above the sidebar */
+  background-color: #212529;
+  padding: 8px 10px;
+  border-radius: 5px;
+}
+
+
 
 
 </style>
@@ -247,16 +250,13 @@ body.dark-mode {
 <body>
 
   <!-- Top Navbar -->
- @include('layouts.navigation')
+
+
+ <i id="sidebarToggle" class="bi bi-list" style="font-size: 24px; color: white; cursor: pointer;"></i>
 
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
-  <div class="flex items-center">
-    <i id="sidebarToggle" class="bi bi-list" style="font-size: 24px; color: white; cursor: pointer; margin-right: 10px; margin-left:20%"></i>
-    <span class="text-white text-xl font-bold">Admin</span>
-  </div>
-   
-    <a href="{{route('dashboard')}}"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{{route('dashboard')}}"> Dashboard</a>
     <a href="{{route('viewproduct')}}"></i> Products</a>
     <a href="{{route('about')}}">About-us </a>
     <a href="{{route('hero')}}">Banner </a>
@@ -274,9 +274,11 @@ body.dark-mode {
  
  
   <!-- Footer -->
-  <div class="footer">
-    © 2025 Admin Dashboard. All rights reserved.
-  </div>
+
+
+
+
+  
   <script>
   const toggleBtn = document.getElementById('modeToggle');
   const body = document.body;
