@@ -6,8 +6,9 @@ use App\Http\Controllers\HeroController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Usercontroller;
 use App\Http\Controllers\adminController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TenantController;
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\razorpaycontroller;
 use App\Http\Controllers\UseraboutController;
@@ -45,6 +46,7 @@ Route::get('detail/{id}',[Usercontroller::class,'detail'])->name('detail');
 Route::get('/wishlist', [Usercontroller::class, 'index'])->name('wishlist');
 Route::post('/wishlist/add/{id}', [Usercontroller::class, 'add'])->name('wishlist.add');
 Route::post('/wishlist/remove/{id}', [Usercontroller::class, 'remove'])->name('wishlist.remove');
+
 
 
 
@@ -126,3 +128,12 @@ Route::resource('users',SpatieUserController::class);
 Route::get('users/{userId}/delete',[SpatieUserController::class,'destroy']);
 
 });
+
+
+
+Route::resource('tanent',TenantController::class)->middleware(['auth', 'verified']);
+Route::post('tanent/store',[TenantController::class,'store'])->middleware(['auth', 'verified'])->name('tenant.store');
+
+
+// multi tannecy
+

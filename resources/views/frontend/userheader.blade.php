@@ -86,6 +86,7 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ route('wishlist') }}">Wishlist</a>
         </li>
+     
         <li class="nav-item">
         @auth
         @if((auth()->user()->hasRole('super-admin'))||(auth()->user()->hasRole('Admin')))  

@@ -32,6 +32,7 @@ public function blogs(){
 }
 
 
+
 public function service(){
     $categories = category::all();
     $products1 = ProductsModel::latest()->get();
