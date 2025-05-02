@@ -266,6 +266,7 @@ body.dark-mode {
     <a href="{{ url('roles') }}">Roles</a>
     <a href="{{ url('users') }}">Users</a>
     <a href="{{ url('tanent') }}">Tanent</a>
+    <a href="{{ url('tanent') }}">Add</a>
     @endif
   @endauth
   <a href="{{route('settings')}}">Settings</a>

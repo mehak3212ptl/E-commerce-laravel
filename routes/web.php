@@ -15,6 +15,7 @@ use App\Http\Controllers\UseraboutController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\SpatieUserController;
 use App\Http\Controllers\TagproductController;
+use App\Http\Controllers\SubscriptionController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,7 +37,7 @@ use App\Http\Controllers\TagproductController;
 
 
 // User interface 
-Route::get('/',[Usercontroller::class,'index1'])->name('/');
+Route::get('index',[Usercontroller::class,'index1'])->name('index');
 Route::get('aboutus',[Usercontroller::class,'about'])->name('aboutus');
 Route::get('contact',[Usercontroller::class,'contact'])->name('contact');
 Route::get('blogs',[Usercontroller::class,'blogs'])->name('blogs');
@@ -132,8 +133,14 @@ Route::get('users/{userId}/delete',[SpatieUserController::class,'destroy']);
 
 
 Route::resource('tanent',TenantController::class)->middleware(['auth', 'verified']);
-Route::post('tanent/store',[TenantController::class,'store'])->middleware(['auth', 'verified'])->name('tenant.store');
+Route::post('tanent/store',[TenantController::class,'store'])->name('tenant.store');
 
 
-// multi tannecy
+// plans 
+Route::get('/',[SubscriptionController::class,'subscription'])->name('/');
 
+
+
+//subscription payemtn
+Route::post('/razorpay/create-order', [razorpaycontroller::class, 'createOrder'])->name('razorpay.create.order');
+Route::get('/tenant/success', [TenantController::class, 'success'])->name('tenant.success');

@@ -26,14 +26,14 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
     'tenant.active',
 ])->group(function () {
-    // Route::get('/', function () {
-    //     return view('app.userpage');
+    Route::get('/', function () {
+        return view('app.userpage');
         
-    // });
+    });
 
-   Route::get('login',function(){
-    return view('app.auth.login');
-   });
+//    Route::get('login',function(){
+//     return view('app.auth.login');
+//    });
 
 //    Route::get('user',function(){
 //     return view('app.users.index');
@@ -41,8 +41,6 @@ Route::middleware([
 
    Route::resource('user',UserController::class)->middleware(['auth', 'verified']);
    
-
-
    require __DIR__.'/user-auth.php';
 
    
