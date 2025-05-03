@@ -6,8 +6,12 @@ use Razorpay\Api\Api;
 use App\Models\Tenant;
 use App\Models\Payment;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules;
+use App\Mail\PaymentSuccessMail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 
 class TenantController extends Controller
 {
@@ -16,9 +20,8 @@ class TenantController extends Controller
      */
     public function index()
     {
-        $tenants=Tenant::with('domains')->get();
-        // dd($tenants);
-        return view('tenancy.index',compact('tenants'));
+        $tenants = Tenant::with('domains')->get();
+        return view('tenancy.index', compact('tenants'));
     }
 
     /**
@@ -33,58 +36,89 @@ class TenantController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $validData = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
-        'domain_name' => 'required|string|max:255|unique:domains,domain',
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        'plan_id' => 'required|exists:plans,id',
-        'razorpay_payment_id' => 'required|string',
-        'razorpay_order_id' => 'required|string',
-        'razorpay_signature' => 'required|string',
-    ]);
+    {
+        if(!empty($request->razorpay_payment_id)){
+            DB::beginTransaction();
+            
+            try {
+                $validData = $request->validate([
+                    'name' => 'required|string|max:255',
+                    'email' => 'required|email|max:255',
+                    'domain_name' => 'required|string|max:255',
+                    'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                ]);
 
-    // Verify the payment signature
-    try {
-        $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
-        
-        // This is the correct way to verify payment
-        $attributes = [
-            'razorpay_order_id' => $request->razorpay_order_id,
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_signature' => $request->razorpay_signature
-        ];
-        
-        $api->utility->verifyPaymentSignature($attributes);
-        
-        // Continue with tenant creation only if payment verification succeeds
-        $tenant = Tenant::create([
-            'name' => $validData['name'],
-            'email' => $validData['email'],
-            'password' => $validData['password'],
-        ]);
-        
-        $tenant->domains()->create([
-            'domain' => $validData['domain_name'] . '.' . config('app.domain')
-        ]);
-        
-        // Create payment record
-        Payment::create([
-            'tenant_id' => $tenant->id,
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_order_id' => $request->razorpay_order_id,
-            'amount' => $request->plan_price,
-            'status' => 'completed',
-        ]);
-        
-        return redirect()->route('tenant.success')->with('success', 'Your account has been created successfully!');
-    } catch (\Exception $e) {
-        // Log the actual exception for debugging
-        \Log::error('Razorpay payment verification failed: ' . $e->getMessage());
-        return redirect()->back()->with('error', 'Payment verification failed. Please try again.');
+                // First check if domain already exists
+                $domainToCheck = $validData['domain_name'] . '.' . config('app.domain');
+                $domainExists = DB::table('domains')->where('domain', $domainToCheck)->exists();
+                
+                if ($domainExists) {
+                    return back()->with('error', "The domain {$domainToCheck} is already taken. Please choose another domain name.");
+                }
+
+                // Verify Razorpay payment
+                $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+
+                $attributes = [
+                    'razorpay_order_id' => $request->razorpay_order_id,
+                    'razorpay_payment_id' => $request->razorpay_payment_id,
+                    'razorpay_signature' => $request->razorpay_signature,
+                ];
+
+                // Signature verification
+                $api->utility->verifyPaymentSignature($attributes);
+
+                // Tenant creation
+                $tenant = Tenant::create([
+                    'name' => $validData['name'],
+                    'email' => $validData['email'],
+                    'password' =>$validData['password'],
+                ]);
+
+                // Domain creation
+                $tenant->domains()->create([
+                    'domain' => $domainToCheck,
+                ]);
+
+                // Extract numeric amount from the price string (remove "INR" and any non-numeric characters)
+                $amount = $request->plan_price;
+                if (is_string($amount) && preg_match('/INR\s*(\d+(\.\d+)?)/', $amount, $matches)) {
+                    $amount = $matches[1]; // Extract just the number
+                }
+
+                // Create payment record manually using direct SQL to avoid model binding issues
+                DB::table('payments')->insert([
+                    'tenant_id' => $tenant->getKey(), // Use getKey() to get primary key value
+                    'razorpay_payment_id' => $request->razorpay_payment_id,
+                    'razorpay_order_id' => $request->razorpay_order_id,
+                    'amount' => $amount,
+                    'status' => 'completed',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                // Email details
+                $tenantData = [
+                    'name' => $tenant->name,
+                    'email' => $tenant->email,
+                    'domain' => $domainToCheck,
+                    'amount' => $amount,
+                ];
+
+                Mail::to($tenant->email)->send(new PaymentSuccessMail($tenantData));
+                
+                DB::commit();
+                dd("success");
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Razorpay payment verification failed: ' . $e->getMessage());
+                dd("fail");
+            }
+        }
+
+        return back()->with('error', 'Invalid payment data');
     }
-}
+
     /**
      * Display the specified resource.
      */

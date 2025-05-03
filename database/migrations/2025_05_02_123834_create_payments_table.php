@@ -13,12 +13,23 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade'); // Links to tenants table
+            
+            // If your tenant uses UUIDs (as the error suggests)
+            // Use uuid() or char(36) for the tenant_id column
+            $table->uuid('tenant_id')->index();
+            
+            // For the payment details
             $table->string('razorpay_payment_id');
             $table->string('razorpay_order_id');
-            $table->decimal('amount', 10, 2); // Adjust size as per your currency format
-            $table->string('status'); // e.g., 'completed', 'failed'
+            
+            // For storing just the numeric amount
+            $table->decimal('amount', 10, 2);
+            
+            $table->string('status');
             $table->timestamps();
+            
+            // Add foreign key if needed
+            // $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
         });
     }
 

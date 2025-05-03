@@ -89,27 +89,38 @@
   </style>
 </head>
 <body>
-<div class="position-relative d-flex justify-content-center align-items-center  bg-light text-dark">
-    @if (Route::has('login'))
-        <div class="position-absolute top-0 end-0 p-4 text-end">
-            @auth
-                <a href="{{ url('/dashboard') }}" class="fw-semibold text-secondary text-decoration-none me-3">
-                    Dashboard
-                </a>
-            @else
-                <a href="{{ route('login') }}" class="fw-semibold text-secondary text-decoration-none me-3">
-                    Log in
-                </a>
+@vite(['resources/js/app.js'])
+@if (Route::has('login'))
+    <div class="position-absolute d-flex align-items-center top-0 end-0 p-3 text-end z-3">
+      @auth
+      @if((auth()->user()->hasRole('super-admin'))||(auth()->user()->hasRole('Admin')))  
+      <x-nav-link   class="nav-link" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                  {{ __('Dashboard') }}
+              </x-nav-link>
+      @endif
+ 
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <button type="submit" class="dropdown-item text-start"
+                  onclick="event.preventDefault(); this.closest('form').submit();">
+            {{ __('Log Out') }}
+          </button>
+        </form>
+     
+  </div>
+</div>   
+      @else
+        <a href="{{ route('login') }}" class="fw-semibold text-secondary text-decoration-none me-2">Log in</a>
+        @if (Route::has('register'))
+          <a href="{{ route('register') }}" class="fw-semibold text-secondary text-decoration-none">Register</a>
+        @endif
+      @endauth
+    </div>
+  @endif
 
-                @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="fw-semibold text-secondary text-decoration-none">
-                        Register
-                    </a>
-                @endif
-            @endauth
-        </div>
-    @endif
-</div>
+
+
+
 
 <section class="pricing-section">
   <div class="container">
@@ -373,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 <script>
     // Add entrance animation for cards
     document.addEventListener('DOMContentLoaded', function() {

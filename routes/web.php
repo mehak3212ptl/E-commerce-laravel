@@ -3,11 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\HeroController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Usercontroller;
 use App\Http\Controllers\adminController;
-use App\Http\Controllers\TenantController;
 
+use App\Http\Controllers\TenantController;
+use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\razorpaycontroller;
@@ -137,7 +139,11 @@ Route::post('tanent/store',[TenantController::class,'store'])->name('tenant.stor
 
 
 // plans 
+Route::get('/subscription',[SubscriptionController::class,'subscription']);
+
 Route::get('/',[SubscriptionController::class,'subscription'])->name('/');
+Route::resource('plans', PlanController::class);
+Route::resource('features', FeatureController::class);
 
 
 
