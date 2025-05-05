@@ -18,6 +18,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\SpatieUserController;
 use App\Http\Controllers\TagproductController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\SubscriptionAdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -59,26 +60,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// ----------------------Ajax crud routes -------------------
-Route::get('index1', [ProductsController::class, 'index'])->name('product.index');
-Route::prefix('products')->group(function(){
-    Route::post('/save-item', [ProductsController::class, 'store'])->name('product.store');
-    Route::get('/{id}/edit',[ProductsController::class, 'edit'])->name('product.edit');
-    Route::post('/{id}/update', [ProductsController::class, 'update'])->name('product.update');
-    Route::delete('/delete/{id}', [ProductsController::class, 'delete'])->name('product.delete');
-});
+
 
 require __DIR__.'/auth.php';
 
 
 // admin routes --------------------
-Route::middleware(['verified', 'preventback',])->group(function () {
-Route::get('/dashboard',[admincontroller::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/viewproduct', [admincontroller::class, 'viewproduct'])->name('viewproduct');
-Route::get('/hero', [HeroController::class, 'hero'])->name('hero');
-Route::get('/users', [admincontroller::class, 'users'])->name('users');
-Route::get('/settings', [admincontroller::class, 'settings'])->name('settings');
-});
 
 // many to many relations 
 Route::get('add-tag', [TagController::class, 'add_tags']);
@@ -86,28 +73,13 @@ Route::get('add-tagproduct', [TagproductController::class, 'add_tagproduct']);
 Route::get('show-tags/{id}', [TagController::class, 'show_tags']);
 Route::get('show-tagproduct/{id}', [TagproductController::class, 'show_tagproduct']);
 
-// hero banner 
-Route::prefix('hero')->group(function(){
-    Route::post('/save-item', [HeroController::class, 'store'])->name('hero.store');
-    Route::get('/{id}/edit',[HeroController::class, 'edit'])->name('hero.edit');
-    Route::post('/{id}/update', [HeroController::class, 'update'])->name('hero.update');
-    Route::delete('/delete/{id}', [HeroController::class, 'delete'])->name('hero.delete');
-    Route::post('/toggle-status/{id}', [HeroController::class, 'toggleStatus'])->name('hero.toggle');
 
-});
+
 // Razor pay code 
 Route::post('/razorpay-payment', [razorpaycontroller::class, 'payment'])->name('razorpay.payment');
 Route::get('/order-success/{orderId}', [razorpaycontroller::class, 'orderSuccess'])->name('order.success');
 
-// About us 
-Route::group(['middleware'=>'role:super-admin|Admin'],function(){ 
-Route::get('/about', [UseraboutController::class, 'index'])->name('about');
-Route::get('/about/create', [UseraboutController::class, 'create']);
-Route::post('/about', [UseraboutController::class, 'store']);
-Route::get('/about/{id}/edit', [UseraboutController::class, 'edit']);
-Route::post('/about/{id}/update', [UseraboutController::class, 'update']);
-Route::get('/about/{id}/delete', [UseraboutController::class, 'delete']);
-});
+
 
 
 
@@ -134,10 +106,6 @@ Route::get('users/{userId}/delete',[SpatieUserController::class,'destroy']);
 
 
 
-Route::resource('tanent',TenantController::class)->middleware(['auth', 'verified']);
-Route::post('tanent/store',[TenantController::class,'store'])->name('tenant.store');
-
-
 // plans 
 Route::get('/subscription',[SubscriptionController::class,'subscription']);
 
@@ -150,3 +118,12 @@ Route::resource('features', FeatureController::class);
 //subscription payemtn
 Route::post('/razorpay/create-order', [razorpaycontroller::class, 'createOrder'])->name('razorpay.create.order');
 Route::get('/tenant/success', [TenantController::class, 'success'])->name('tenant.success');
+
+
+
+// dashboard
+Route::get('/admindashboard',[SubscriptionAdminController::class,'index'])->name('admindashboard');
+Route::get('/adminsettings', [SubscriptionAdminController::class, 'settings'])->name('settings');
+
+Route::resource('tanent',TenantController::class)->middleware(['auth', 'verified']);
+Route::post('tanent/store',[TenantController::class,'store'])->name('tenant.store');

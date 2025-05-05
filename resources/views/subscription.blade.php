@@ -94,7 +94,7 @@
     <div class="position-absolute d-flex align-items-center top-0 end-0 p-3 text-end z-3">
       @auth
       @if((auth()->user()->hasRole('super-admin'))||(auth()->user()->hasRole('Admin')))  
-      <x-nav-link   class="nav-link" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+      <x-nav-link   class="nav-link" :href="route('admindashboard')" :active="request()->routeIs('admindashboard')">
                   {{ __('Dashboard') }}
               </x-nav-link>
       @endif

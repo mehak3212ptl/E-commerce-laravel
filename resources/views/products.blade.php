@@ -116,6 +116,7 @@
         aria-hidden="true">
         <div class="modal-dialog">
             <form id="productForm" enctype="multipart/form-data" class="modal-content">
+                @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -145,6 +146,7 @@
                         <option value="6">Grocery</option>
                         <option value="5">Stationery</option>
                         <option value="7">Toys</option>
+                        <option value="8">Beautys</option>
                         </select>
                         </div> 
                     <div class="form-group mb-3">
@@ -196,6 +198,7 @@
                         <option value="6">Grocery</option>
                         <option value="5">Stationery</option>
                         <option value="7">Toys</option>
+                        <option value="8">Beautys</option>
                        
                         </select>
                         </div>
@@ -275,7 +278,7 @@ new DataTable('#bannerTable', {
             $('.error-text').text('');
     
             $.ajax({
-                url: "{{ route('product.store') }}",
+                url: '/storeproducts',,
                 type: "POST",
                 data: formData,
                 contentType: false,

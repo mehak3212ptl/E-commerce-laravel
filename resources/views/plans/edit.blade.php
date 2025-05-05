@@ -1,4 +1,4 @@
-@extends('adminlayout.adminmaster')
+@extends('subscriptionAdmin.adminlayout.adminmaster')
 
 @section('content')
 <div class="container">

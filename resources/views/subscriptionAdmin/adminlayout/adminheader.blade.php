@@ -256,16 +256,12 @@ body.dark-mode {
 
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
-    <a href="{{url('dashboard')}}"> Dashboard</a>
-    <a href="{{url('viewproduct')}}"></i> Products</a>
-    <a href="{{url('about')}}">About-us </a>
-    <a href="{{url('hero')}}">Banner </a>
+    <a href="{{route('admindashboard')}}"> Dashboard</a>
 
-    <a href="{{ url('permissions') }}">Permissions</a>
-    <a href="{{ url('roles') }}">Roles</a>
-
+    <a href="{{ url('tanent') }}">Tanent</a>
+    <a href="{{ url('plans') }}">Add Plans</a>
     
-  <a href="{{url('settings')}}">Settings</a>
+  <a href="{{route('settings')}}">Settings</a>
   <a href="#" id="modeToggle" class="bi bi-moon-stars-fill" style="padding-left: 60px; padding-top: 15px;">on | off</a>
   
   </div>

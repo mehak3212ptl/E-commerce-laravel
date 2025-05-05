@@ -69,83 +69,58 @@
       <!-- Left Side: Navigation -->
       <ul class="navbar-nav mb-2 mb-lg-0">
       <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ route('index') }}">Home</a>
+          <a class="nav-link active" aria-current="page" href="{{ url('/') }}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('aboutus') }}">About</a>
+          <a class="nav-link" href="{{ url('aboutus') }}">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('service') }}">Products</a>
+          <a class="nav-link" href="{{ url('service') }}">Products</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('blogs') }}">Blogs</a>
+          <a class="nav-link" href="{{ url('blogs') }}">Blogs</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('contact') }}">Contact</a>
+          <a class="nav-link" href="{{ url('contact') }}">Contact</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('wishlist') }}">Wishlist</a>
+          <a class="nav-link" href="{{ url('wishlist') }}">Wishlist</a>
         </li>
      
-        <li class="nav-item">
-        @auth
-        @if((auth()->user()->hasRole('super-admin'))||(auth()->user()->hasRole('Admin')))  
-  
-                    <x-nav-link   class="nav-link" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                
-                @endif
-        @endauth
-        </li>
+       
       </ul>
-     
-      @if (Route::has('login'))
-      @auth
-<!-- Right Side: Search + User Dropdown + Socials -->
-<div class="d-flex align-items-center right-section">
 
-  <!-- Search -->
-  <form class="d-flex me-3">
-    <input class="form-control form-control-sm" type="search" placeholder="Search" aria-label="Search">
-  </form>
 
-  <!-- User Dropdown -->
-  <div class="dropdown me-3">
-    <a class="btn btn-light dropdown-toggle fw-bold text-dark" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-      {{ Auth::user()->name }}
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-      <li>
-        <form method="POST" action="{{ route('logout') }}">
-          @csrf
-          <button type="submit" class="dropdown-item text-danger">Logout</button>
-        </form>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Social Icons -->
-  <div class="social-icons d-flex align-items-center">
-    <a href="#"><i class="fab fa-instagram"></i></a>
-    <a href="#"><i class="fab fa-telegram-plane"></i></a>
-    <a href="#"><i class="fab fa-facebook-f"></i></a>
-    <a href="#"><i class="fab fa-twitter"></i></a>
-  </div>
 </div>
-@else
+
+
+
 <!-- Auth Links (Login/Register) -->
 <div class="d-flex align-items-center right-section">
   <form class="d-flex me-3">
     <input class="form-control form-control-sm" type="search" placeholder="Search" aria-label="Search">
   </form>
 
+  
+<form method="POST" action="{{ url('tenantlogout') }}">
+          @csrf
+          <button type="submit" class="dropdown-item text-start"
+                  onclick="event.preventDefault(); this.closest('form').submit();">
+            {{ __('Log Out') }}
+          </button>
+        </form>
+
   <div class="auth-links d-flex align-items-center me-3">
-    <a href="{{ route('login') }}">Login</a>
-    @if (Route::has('register'))
-    <a href="{{ route('register') }}">Register</a>
-    @endif
-  </div>
+    @auth
+        <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
+    @else
+        <a href="{{ url('tenantlogin') }}" class="nav-link">Login</a>
+        @if (Route::has('register'))
+            <a href="{{ url('tenantregister') }}" class="nav-link ms-3">Register</a>
+        @endif
+    @endauth
+</div>
+
 
   <!-- Social Icons -->
   <div class="social-icons d-flex align-items-center">
@@ -155,9 +130,7 @@
     <a href="#"><i class="fab fa-twitter"></i></a>
   </div>
 </div>
-@endauth
 
-        @endif
 
         
     </div>

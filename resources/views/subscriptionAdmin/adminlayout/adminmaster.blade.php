@@ -29,9 +29,9 @@
     </style>
 </head>
 <body>
-@include('adminlayout.adminhead')
+@include('layouts.navigation')
     <div class="main2">
-        @include('adminlayout.adminheader')
+        @include('subscriptionAdmin.adminlayout.adminheader')
         <div class=" content2" >
             @yield('content')
         </div>

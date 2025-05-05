@@ -2,188 +2,173 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\category;
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\ProductsModel;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
-use Intervention\Image\ImageManager;
-
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Validator;
 
-class ProductsController extends Controller
+class ProductController extends Controller
 {
-
-
-    public function index(Request $request)
+    /**
+     * Display a listing of products
+     */
+    public function index()
     {
-        // $products = ProductsModel::latest()->get();
-
-    
-        // return view('products', compact('products'));
-
-        $products = ProductsModel::with('category')->get();
-        return view('products', compact('products'));
-    
-     
+        $products = Product::with('category')->latest()->get();
+        return view('products.index', compact('products'));
     }
-    
 
-
-
+    /**
+     * Store a newly created product
+     */
     public function store(Request $request)
     {
-        Log::error("heeeehehe");
-
-        $request->validate([
-            'name' => 'required|min:1|max:10',
-            'description' => 'required',
-            'price'=>'required',
-            'category'=>'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'category' => 'required|exists:categories,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-       
-        if ($request->hasFile('image')) {
-            $manager = new ImageManager(new Driver());
-    
-            $name_gen = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
-    
-            $img = $manager->read($request->file('image'));
-            $img->resize(800, 400);
-            $img->save(public_path('Upload/products/' . $name_gen));
-    
-            $save_url = 'Upload/products/' . $name_gen;
-    
-            $product = ProductsModel::create([
-                'name' => $request->name,
-                'description' => $request->description,
-                'price'=> $request->price,
-                'category_id' => $request->category,
-                'image' => $save_url,
-            ]);
-    
+
+        if ($validator->fails()) {
             return response()->json([
-                'success' => 'Product saved successfully.',
-                'product' => [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'description' => $product->description,
-                    'price'=> $product->price,
-                    'category' =>category::where('id',$request->category)->value('categoryname'),
-                    'image' => asset($product->image),
-                ]
-            ]);
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
         }
-    
-        return response()->json(['error' => 'Image upload failed.'], 422);
-    }
 
-
-
-
-
-
-    // Edit a product by its ID
-    public function edit($id)
-    {
-        $product = ProductsModel::findOrFail($id);
-    
-        return response()->json([
-            'product' => $product
-        ]);
-    }
-    
-    // Update a product by its ID
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|min:1|max:10',
-            'description' => 'required',
-            'price'=>'required',
-            'category'=>'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-    
-        $product = ProductsModel::findOrFail($id);
-    
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price=$request->price;
-        $product->category_id = $request->category;
-    
+        // Handle image upload
+        $imagePath = null;
         if ($request->hasFile('image')) {
-            $manager = new ImageManager(new Driver());
-    
-            if ($product->image && Storage::exists($product->image)) {
-                Storage::delete($product->image);
-            }
-
-            if ($product->image) {
-                $imagePath = public_path($product->image);
-        
-                if (File::exists($imagePath)) {
-                    File::delete($imagePath);
-                } else {
-                    
-                }
-            } 
-    
-            $name_gen = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
-            $img = $manager->read($request->file('image'));
-            $img->resize(800, 400);
-            $img->save(public_path('Upload/products/' . $name_gen));
-    
-            $save_url = 'Upload/products/' . $name_gen;
-            $product->image = $save_url;
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = 'uploads/products/' . $imageName;
+            Storage::disk('public')->put($imagePath, file_get_contents($image));
         }
-    
-        $product->save();
-    
+
+        // Create product
+        $product = Product::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'category_id' => $request->category,
+            'image' => $imagePath ? asset('storage/' . $imagePath) : null,
+        ]);
+
+        $category = Category::find($request->category);
+
         return response()->json([
-            'success' => 'Product updated successfully.',
+            'success' => 'Product added successfully!',
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name,
                 'description' => $product->description,
-                'price'=>$product->price,
-                'category' =>category::where('id',$request->category)->value('categoryname'),
-                'image' => asset($product->image),
+                'price' => $product->price,
+                'category' => $category->categoryname,
+                'category_id' => $product->category_id,
+                'image' => $product->image,
+                'index' => $product->id
             ]
         ]);
     }
-    
 
-
-    // Delete a product by its ID
-    public function delete($id)
+    /**
+     * Get product data for editing
+     */
+    public function edit($id)
     {
-        $product = ProductsModel::find($id);
-    
-        if (!$product) {
-            // Log::error("Product not found with ID: $id");
-            return response()->json(['error' => 'Product not found'], 404);
-        }
-    
-        // Log::info("Found product: " . $product->name);
-    
-        if ($product->image) {
-            $imagePath = public_path($product->image);
-    
-            if (File::exists($imagePath)) {
-                File::delete($imagePath);
-                // Log::info("Image deleted at: $imagePath");
-            } else {
-                // Log::warning("Image not found at: $imagePath");
-            }
-        } else {
-            // Log::warning("No image field for product: $id");
-        }
-    
-        $product->delete();
-        // Log::info("Product deleted: $id");
-    
-        return response()->json(['success' => 'Product deleted successfully']);
+        $product = Product::findOrFail($id);
+        
+        return response()->json([
+            'product' => $product
+        ]);
     }
-    
+
+    /**
+     * Update the specified product
+     */
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'category' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $product = Product::findOrFail($id);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($product->image) {
+                $oldPath = str_replace(asset('storage/'), '', $product->image);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
+            // Upload new image
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = 'uploads/products/' . $imageName;
+            Storage::disk('public')->put($imagePath, file_get_contents($image));
+            $product->image = asset('storage/' . $imagePath);
+        }
+
+        // Update product details
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->category_id = $request->category;
+        $product->save();
+
+        // Get category name for response
+        $category = Category::find($request->category);
+
+        return response()->json([
+            'success' => 'Product updated successfully!',
+            'product' => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+                'category' => $category->categoryname,
+                'category_id' => $product->category_id,
+                'image' => $product->image
+            ]
+        ]);
+    }
+
+    /**
+     * Remove the specified product
+     */
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+
+        // Delete image if exists
+        if ($product->image) {
+            $imagePath = str_replace(asset('storage/'), '', $product->image);
+            if (Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+            }
+        }
+
+        $product->delete();
+
+        return response()->json([
+            'success' => 'Product has been deleted successfully!'
+        ]);
+    }
 }
