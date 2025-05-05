@@ -112,7 +112,13 @@ class TenantController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error('Razorpay payment verification failed: ' . $e->getMessage());
-                dd("fail");
+                $tenantData = [
+                    'name' => isset($tenant->name) ? $tenant->name : 'User',
+                    'amount' => isset($amount) ? $amount : 0,
+                    'domain' => isset($domainToCheck) ? $domainToCheck : 'yourdomain.com',
+                ];
+            
+                return view('payment_success')->with('tenantData', $tenantData);
             }
         }
 

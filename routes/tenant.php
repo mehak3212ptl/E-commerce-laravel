@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Usercontroller;
+
 use App\Http\Controllers\admincontroller;
-use App\Http\Controllers\app\UserController;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -27,25 +28,19 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
     'tenant.active',
 ])->group(function () {
-    Route::get('/', function () {
-        return view('app.userpage');
-        
-    });
+    // Route::get('/', function () {
+    //     return view('app.userpage');
+    // });
 
+    Route::get('/',[Usercontroller::class,'index1'])->name('index');
 
     Route::get('/dashboard', function () {
-        return view('app.users.index');
+        return view('dashboard');
         
     });
-//    Route::get('tenantlogin',function(){
-//     return view('app.auth.login');
-//    });
 
-//    Route::get('user',function(){
-//     return view('app.users.index');
-//    });
 
-   Route::resource('user',UserController::class)->middleware(['auth', 'verified']);
+
    
    require __DIR__.'/user-auth.php';
 
