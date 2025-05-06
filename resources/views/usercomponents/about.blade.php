@@ -9,7 +9,7 @@
         {{-- Left: Image --}}
         <div class="col-md-6 mb-4 mb-md-0">
             @if ($about->image)
-                <img src="{{ asset('storage/' . $about->image) }}" 
+                <<img src="/Upload/about/{{ basename($about->image) }}" 
                      class="img-fluid rounded shadow" 
                      alt="About Image" style="max-height: 400px; object-fit: cover; width: 100%;">
             @endif

@@ -11,7 +11,7 @@ use App\Http\Controllers\adminController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProductsController;
+
 use App\Http\Controllers\razorpaycontroller;
 use App\Http\Controllers\UseraboutController;
 use App\Http\Controllers\PermissionController;
@@ -83,26 +83,7 @@ Route::get('/order-success/{orderId}', [razorpaycontroller::class, 'orderSuccess
 
 
 
-// role and permission 
 
-
-Route::group(['middleware'=>'role:super-admin'],function(){ 
-// PERMISSIOM 
-Route::resource('permissions',PermissionController::class);
-Route::get('permissions/{permissionId}/delete',[PermissionController::class,'destroy']);
-
-// ROLES 
-Route::resource('roles',RoleController::class);
-Route::get('roles/{roleId}/delete',[RoleController::class,'destroy']);
-
-Route::get('roles/{roleId}/give-permissions',[RoleController::class,'addPermissionToRole']);
-Route::put('roles/{roleId}/give-permissions',[RoleController::class,'givePermissionToRole']);
-
-
-Route::resource('users',SpatieUserController::class);
-Route::get('users/{userId}/delete',[SpatieUserController::class,'destroy']);
-
-});
 
 
 

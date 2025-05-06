@@ -74,14 +74,14 @@
                 <td>{{ $product->description }}</td>
                 
                 <td>
-                    @if($product->image)
-                    <img src="{{ asset($product->image) }}"
-                         style="width: 100px; height: 60px; object-fit: cover; border-radius: 0.5rem; cursor: pointer;"
-                         class="product-img shadow-sm"
-                         alt="Image">
-                    @else
-                    <span class="text-muted fst-italic">No Image</span>
+                    
+                @if($product->image)
+                        <img src="/Upload/products/{{ basename($product->image) }}" style="width: 120px; height: 60px; cursor:pointer;"
+                         class="product-img" alt="Image">
+             @else
+
                     @endif
+                   
                 </td>
                 <td>{{ $product->price}}</td>
                 <td>{{ $product->category->categoryname }}</td>
@@ -141,12 +141,8 @@
                     <label >Choose a category:</label>
 
                         <select name="category" class="form-control" required>
-                        <option value="1">Electronics</option>
-                        <option value="2">Cosmetics</option>
-                        <option value="6">Grocery</option>
-                        <option value="5">Stationery</option>
-                        <option value="7">Toys</option>
-                        <option value="8">Beautys</option>
+                       
+                        <option value="1">Beauty</option>
                         </select>
                         </div> 
                     <div class="form-group mb-3">
@@ -193,12 +189,8 @@
                     <label >Choose a category:</label>
 
                         <select id="editcategory" name="category" class="form-control" required>
-                        <option value="1">Electronics</option>
-                        <option value="2">Cosmetics</option>
-                        <option value="6">Grocery</option>
-                        <option value="5">Stationery</option>
-                        <option value="7">Toys</option>
-                        <option value="8">Beautys</option>
+                        
+                        <option value="1">Beauty</option>
                        
                         </select>
                         </div>
@@ -241,174 +233,179 @@
         </div>
     </div>
 
-
-    <!-- Bootstrap & jQuery -->
     
-    <script>
-// datatabels 
+<script>
 new DataTable('#bannerTable', {
     layout: {
         topStart: {
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-   }
-}
+        }
+    }
 });
 
-            // $('#addProductModal').modal('hide'); // Close modal
+// Show image in modal
+$(document).on('click', '.product-img', function() {
+    const imageUrl = $(this).attr('src');
+    $('#previewImage').attr('src', imageUrl);
+    $('#imagePreviewModal').modal('show');
+});
+// Add Product AJAX
+$('#productForm').submit(function(e) {
+    e.preventDefault();
+    let formData = new FormData(this);
+    // Clear old errors
+    $('.error-text').text('');
 
-            // // Remove backdrop and cleanup body class
-            // $('.modal-backdrop').remove();
-            // $('body').removeClass('modal-open');
-            // $('body').css('padding-right', '');
+    $.ajax({
+        url: '/storeproducts',
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        success: function(response) {
+            $('#message').html(`<div class="alert alert-success">${response.success}</div>`);
+            $('#productForm')[0].reset();
+            $('#addProductModal').modal('hide');
+            let newRow = `<tr id="product_${response.product.id}">
+                <td>${response.product.id}</td>
+                <td class="fw-semibold">${response.product.name}</td>
+                <td>${response.product.description}</td>
+                <td>
+                    <img src="${response.product.image}" 
+                         style="width: 100px; height: 60px; object-fit: cover; border-radius: 0.5rem; cursor: pointer;"
+                         class="product-img shadow-sm" 
+                         alt="Image">
+                </td>
+                <td>${response.product.price}</td>
+                <td>${response.product.category}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm editProductBtn mb-1" data-id="${response.product.id}" data-bs-toggle="modal" data-bs-target="#editProductModal">
+                        <i class="fas fa-edit me-1"></i>Edit
+                    </button>
+                    <br>
+                    <button class="btn btn-danger btn-sm deleteProductBtn" data-id="${response.product.id}">
+                        <i class="fas fa-trash-alt me-1"></i>Delete
+                    </button>
+                </td>
+            </tr>`;
+            $('#productTable').prepend(newRow);
+        },
+        error: function(xhr) {
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON.errors;
+                $.each(errors, function(field, messages) {
+                    $(`.error-text.${field}_error`).text(messages[0]);
+                });
+            } else {
+                console.error(xhr.responseText); // Log the error for debugging
+                $('#message').html(`<div class="alert alert-danger">Something went wrong. Error: ${xhr.status}</div>`);
+            }
+        }
+    });
+});
 
-        // Show image in modal
-        $(document).on('click', '.product-img', function() {
-             const imageUrl = $(this).attr('src');
-             $('#previewImage').attr('src', imageUrl);
-             $('#imagePreviewModal').modal('show');
-        });
-
-
-
-        // Add Product AJAX
-        $('#productForm').submit(function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-            // Clear old errors
-            $('.error-text').text('');
+// Edit Product AJAX - Load Product Data into Modal
+$(document).on('click', '.editProductBtn', function() {
+    let productId = $(this).data('id');
     
-            $.ajax({
-                url: '/storeproducts',,
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                success: function(response) {
-                    $('#message').html(`<div class="alert alert-success">${response.success}</div>`);
-                    $('#productForm')[0].reset();
-                    $('#addProductModal').modal('hide');
-                    let newRow = `<tr id="product_${response.product.id}">
-                        <td>${response.product.index}</td>
-                        <td>${response.product.name}</td>
-                        <td>${response.product.description}</td>
-                        <td>${response.product.price}</td>
-                        <td>${response.product.category}</td>
-                        <td><img src="${response.product.image}" class="product-img" alt="Image"></td>
-                        <td><button class="btn btn-warning btn-sm editProductBtn" data-id="${response.product.id}">Edit</button>
-                        <button class="btn btn-danger btn-sm deleteProductBtn" data-id="${response.product.id}">Delete</button></td>
-                    </tr>`;
-                    // $('#productTable').append(newRow);
-                    $('#productTable').prepend(newRow);
-                },
-                error: function(xhr) {
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-                        $.each(errors, function(field, messages) {
-                            $(`.error-text.${field}_error`).text(messages[0]);
-                        });
-                    } else {
-                        $('#message').html(`<div class="alert alert-danger">Something went wrong.</div>`);
-                    }
+    $.ajax({
+        url: `/products/${productId}/edit`,
+        type: 'GET',
+        success: function(response) {
+            $('#editProductId').val(response.product.id);
+            $('#editProductName').val(response.product.name);
+            $('#editProductDescription').val(response.product.description);
+            $('#editProductPrice').val(response.product.price);
+            $('#editcategory').val(response.product.category_id);
+            // Set the image preview
+            if (response.product.image) {
+                $('#edit-preview-image').attr('src', response.product.image).show();
+            } else {
+                $('#edit-preview-image').hide();
+            }
+    
+            $('#editProductModal').modal('show');
+        },
+        error: function(xhr) {
+            console.error(xhr.responseText);
+            Swal.fire('Error!', 'Failed to load product data', 'error');
+        }
+    });
+});
+
+// Update Product AJAX
+$('#editProductForm').submit(function(e) {
+    e.preventDefault();
+    let productId = $('#editProductId').val();
+    let formData = new FormData(this);
+
+    $.ajax({
+        url: `/products/${productId}/update`,
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        success: function(response) {
+            $('#message').html(`<div class="alert alert-success">${response.success}</div>`);
+            $('#editProductForm')[0].reset();
+            $('#editProductModal').modal('hide');
+            $(`#product_${response.product.id} td:nth-child(2)`).text(response.product.name);
+            $(`#product_${response.product.id} td:nth-child(3)`).text(response.product.description);
+            $(`#product_${response.product.id} td:nth-child(5)`).text(response.product.price);
+            $(`#product_${response.product.id} td:nth-child(6)`).text(response.product.category);
+            if (response.product.image) {
+                $(`#product_${response.product.id} td:nth-child(4) img`).attr('src', response.product.image);
+            }
+        },
+        error: function(xhr) {
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON.errors;
+                $.each(errors, function(field, messages) {
+                    $(`.error-text.${field}_error`).text(messages[0]);
+                });
+            } else {
+                console.error(xhr.responseText); // Log the error for debugging
+                $('#message').html(`<div class="alert alert-danger">Something went wrong. Error: ${xhr.status}</div>`);
+            }
+        }
+    });
+});
+
+// Delete Product AJAX with Event Delegation
+$(document).on('click', '.deleteProductBtn', function(e) {
+    e.preventDefault();
+
+    const productId = $(this).data('id');
+    
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will delete the product permanently!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+    }).then(result => {
+        if (result.isConfirmed) {
+            axios.delete(`/products/delete/${productId}`, {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
+            })
+            .then(response => {
+                Swal.fire('Deleted!', response.data.success, 'success');
+                $(`#product_${productId}`).remove();
+            })
+            .catch(error => {
+                console.error(error);
+                Swal.fire('Error!', 'There was a problem deleting the product.', 'error');
             });
-        });
-    
-        // Edit Product AJAX - Load Product Data into Modal
-        $(document).on('click', '.editProductBtn', function() {
-            let productId = $(this).data('id');
-            
-            $.ajax({
-                url: `/products/${productId}/edit`,
-                type: 'GET',
-                success: function(response) {
-                    $('#editProductId').val(response.product.id);
-                    $('#editProductName').val(response.product.name);
-                    $('#editProductDescription').val(response.product.description);
-                    $('#editProductPrice').val(response.product.price);
-                    $('#editcategory').val(response.product.category_id);
-                    // Set the image preview
-                    if (response.product.image) {
-                        $('#edit-preview-image').attr('src', response.product.image).show();
-                    } else {
-                        $('#edit-preview-image').hide();
-                    }
-            
-                    $('#editProductModal').modal('show');
-                }
-            });
-        });
-    
-        // Update Product AJAX
-        $('#editProductForm').submit(function(e) {
-            e.preventDefault();
-            let productId = $('#editProductId').val();
-            let formData = new FormData(this);
-    
-            $.ajax({
-                url: `/products/${productId}/update`,
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                success: function(response) {
-                    $('#message').html(`<div class="alert alert-success">${response.success}</div>`);
-                    $('#editProductForm')[0].reset();
-                    $('#editProductModal').modal('hide');
-                    $(`#product_${response.product.id} td:nth-child(2)`).text(response.product.name);
-                    $(`#product_${response.product.id} td:nth-child(3)`).text(response.product.description);
-                    $(`#product_${response.product.id} td:nth-child(3)`).text(response.product.price);
-                    $(`#product_${response.product.id} td:nth-child(3)`).text(response.product.category_id);
-                    $(`#product_${response.product.id} td:nth-child(4) img`).attr('src', response.product.image);
-                },
-                error: function(xhr) {
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-                        $.each(errors, function(field, messages) {
-                            $(`.error-text.${field}_error`).text(messages[0]);
-                        });
-                    } else {
-                        $('#message').html(`<div class="alert alert-danger">Something went wrong.</div>`);
-                    }
-                }
-            });
-        });
-    
-        // Delete Product AJAX with Event Delegation
-        $(document).on('click', '.deleteProductBtn', function(e) {
-            e.preventDefault();
-    
-            const productId = $(this).data('id');
-            
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'This will delete the product permanently!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-            }).then(result => {
-                if (result.isConfirmed) {
-                    axios.delete(`/products/delete/${productId}`, {
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        }
-                    })
-                    .then(response => {
-                        Swal.fire('Deleted!', response.data.success, 'success');
-                        $(`#product_${productId}`).remove();
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        Swal.fire('Error!', 'There was a problem deleting the product.', 'error');
-                    });
-                }
-            });
-        });
-    </script>
+        }
+    });
+});
 
-
+</script>
 </body>
 </html>

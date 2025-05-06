@@ -86,7 +86,17 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ url('wishlist') }}">Wishlist</a>
         </li>
-     
+        <li class="nav-item">
+        @auth
+                @if(Auth::user()->type!='user')
+                <div class="nav-link">
+                    <x-nav-link :href="url('dashboard')" :active="request()->is('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+                </div>
+                @endif
+                @endauth
+        </li>
        
       </ul>
 
@@ -112,7 +122,7 @@
 
   <div class="auth-links d-flex align-items-center me-3">
     @auth
-        <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
+        
     @else
         <a href="{{ url('tenantlogin') }}" class="nav-link">Login</a>
         @if (Route::has('register'))
@@ -129,6 +139,8 @@
     <a href="#"><i class="fab fa-facebook-f"></i></a>
     <a href="#"><i class="fab fa-twitter"></i></a>
   </div>
+
+  
 </div>
 
 

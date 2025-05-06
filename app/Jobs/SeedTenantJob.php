@@ -30,6 +30,9 @@ class SeedTenantJob implements ShouldQueue
                 'email'=>$this->tenant->email,
                 'password'=>$this->tenant->password,
             ]);
+            $user=User::latest()->first();
+            $user->type='admin';
+            $user->save();
         });
     }
 }

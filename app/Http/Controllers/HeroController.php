@@ -20,21 +20,21 @@ class HeroController extends Controller
 
    public function store(Request $request)
     {
-        Log::error("Product not found with ID");
+      
 
         $request->validate([
             'description' => 'required',
             'title'=>'required',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-        Log::error("product not found");
+       
         if ($request->hasFile('image')) {
             $manager = new ImageManager(new Driver());
     
             $name_gen = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
     
             $img = $manager->read($request->file('image'));
-
+            $img->resize(800, 400);
             $img->save(public_path('Upload/Banner/' . $name_gen));
     
             $save_url = 'Upload/Banner/' . $name_gen;
@@ -84,7 +84,7 @@ class HeroController extends Controller
         $hero = hero::findOrFail($id);
 
         $hero->description = $request->description;
-        // $hero->category_id = $request->category;
+        $hero->title = $request->title;
     
         if ($request->hasFile('image')) {
             $manager = new ImageManager(new Driver());
@@ -117,10 +117,9 @@ class HeroController extends Controller
         return response()->json([
             'success' => 'Product updated successfully.',
             'hero' => [
-                'id' => $hero->id,
-               
+                'id' => $hero->id,  
+                'title'=> $hero->title,        
                 'description' => $hero->description,
-                'title'=> $hero->title,
                 'status' =>'0',
                 'image' => asset($hero->image),
             ]

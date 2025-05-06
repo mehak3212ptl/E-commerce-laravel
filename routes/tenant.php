@@ -6,10 +6,12 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HeroController;
 
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Usercontroller;
 use App\Http\Controllers\admincontroller;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UseraboutController;
+use App\Http\Controllers\PermissionController;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -47,29 +49,29 @@ Route::get('blogs',[Usercontroller::class,'blogs'])->name('blogs');
 Route::get('service',[Usercontroller::class,'service'])->name('service');
 Route::get('/products/filter/{category_id}', [Usercontroller::class, 'filter'])->name('products.filter');
 Route::get('detail/{id}',[Usercontroller::class,'detail'])->name('detail');
-Route::get('/wishlist', [Usercontroller::class, 'index'])->name('wishlist');
-Route::post('/wishlist/add/{id}', [Usercontroller::class, 'add'])->name('wishlist.add');
-Route::post('/wishlist/remove/{id}', [Usercontroller::class, 'remove'])->name('wishlist.remove');
+Route::get('/wishlist', [UserController::class, 'index']);
+Route::post('/wishlist/add/{id}', [UserController::class, 'add']);
+Route::post('/wishlist/remove/{id}', [UserController::class, 'remove']);
+Route::post('success',[Usercontroller::class,'success']);
 
 
 
 
 // dashboard default
  Route::get('/dashboard',[admincontroller::class,'index']);
-        Route::get('/viewproduct', [admincontroller::class, 'viewproduct']);
-        Route::get('/hero', [HeroController::class, 'hero']);
-        Route::get('/users', [admincontroller::class, 'users']);
-        Route::get('/settings', [admincontroller::class, 'settings']);
+ Route::get('/viewproduct', [admincontroller::class, 'viewproduct']);
+Route::get('/hero', [HeroController::class, 'hero']);
+Route::get('/users', [admincontroller::class, 'users']);
+Route::get('/settings', [admincontroller::class, 'settings']);
         
-        // hero banner 
-        Route::prefix('hero')->group(function(){
-            Route::post('/herosaveitem', [HeroController::class, 'store'])->name('hero.store');
-            Route::get('/{id}/edit',[HeroController::class, 'edit'])->name('hero.edit');
-            Route::post('/{id}/update', [HeroController::class, 'update'])->name('hero.update');
-            Route::delete('/delete/{id}', [HeroController::class, 'delete'])->name('hero.delete');
-            Route::post('/toggle-status/{id}', [HeroController::class, 'toggleStatus'])->name('hero.toggle');
+// hero banner        
+Route::post('/herosaveitem', [HeroController::class, 'store']);
+Route::get('/{id}/edit',[HeroController::class, 'edit']);
+Route::post('/{id}/heroupdate', [HeroController::class, 'update']);
+Route::delete('/delete/{id}', [HeroController::class, 'delete']);
+Route::post('/toggle-status/{id}', [HeroController::class, 'toggleStatus']);
         
-        });
+       
 
 
     // About us 
@@ -83,15 +85,28 @@ Route::post('/wishlist/remove/{id}', [Usercontroller::class, 'remove'])->name('w
 
 // ----------------------Ajax crud routes -------------------
 
+Route::get('/products/fetch', [ProductsController::class, 'index']);
+Route::post('/storeproducts', [ProductsController::class, 'store']);
+Route::get('/products/{id}/edit', [ProductsController::class, 'edit']);
+Route::post('/products/{id}/update', [ProductsController::class, 'update']);
+Route::delete('/products/delete/{id}', [ProductsController::class, 'destory']);
+// role and permission 
 
-Route::get('/products', [ProductsController::class, 'index'])->name('tenant.products.index');
-Route::get('/products/fetch', [ProductsController::class, 'fetch'])->name('tenant.products.fetch');
-Route::post('/storeproducts', [ProductsController::class, 'store'])->name('tenant.products.store');
-Route::get('/products/{id}/edit', [ProductsController::class, 'edit'])->name('tenant.products.edit');
-Route::put('/products/{id}/update', [ProductsController::class, 'update'])->name('tenant.products.update');
-Route::delete('/products/delete/{id}', [ProductsController::class, 'destroy'])->name('tenant.products.destroy');
-
-
+    // PERMISSIOM 
+    Route::resource('permissions',PermissionController::class);
+    Route::get('permissions/{permissionId}/delete',[PermissionController::class,'destroy']);
+    
+    // ROLES 
+    Route::resource('roles',RoleController::class);
+    Route::get('roles/{roleId}/delete',[RoleController::class,'destroy']);
+    
+    Route::get('roles/{roleId}/give-permissions',[RoleController::class,'addPermissionToRole']);
+    Route::put('roles/{roleId}/give-permissions',[RoleController::class,'givePermissionToRole']);
+    
+    
+    Route::resource('users',SpatieUserController::class);
+    Route::get('users/{userId}/delete',[SpatieUserController::class,'destroy']);
+    
 
    
    require __DIR__.'/user-auth.php';

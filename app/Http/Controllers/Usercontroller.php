@@ -81,5 +81,8 @@ public function remove(Request $request, $id)
     return redirect()->back()->with('success', 'Product removed from wishlist.');
 }
 
+public function success(){
+    return view('usercomponents/success');       
+}
 
 }

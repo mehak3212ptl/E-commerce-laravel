@@ -83,7 +83,7 @@
                             <td>{{ $hero->description }}</td>
                             <td>
                                 @if($hero->url)
-                                <img src="{{ asset($hero->url) }}"
+                                <img src="Upload/Banner/{{ basename($hero->url) }}" 
                                      style="width: 100px; height: 60px; object-fit: cover; border-radius: 0.5rem; cursor: pointer;"
                                      class="product-img shadow-sm"
                                      alt="Image">
@@ -177,6 +177,7 @@ w
         aria-hidden="true">
         <div class="modal-dialog">
             <form id="editheroForm" enctype="multipart/form-data" class="modal-content">
+                @csrf
                 <input type="hidden" name="hero_id" id="editheroId">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editheroModalLabel">Edit Image </h5>
@@ -273,7 +274,7 @@ w
             $('.error-text').text('');
     
             $.ajax({
-                url: "{{ route('hero.store') }}",
+                url: '/herosaveitem',
                 type: "POST",
                 data: formData,
                 contentType: false,
@@ -319,7 +320,7 @@ w
             let heroId = $(this).data('id');
             
             $.ajax({
-                url: `/hero/${heroId}/edit`,
+                url: `${heroId}/edit`,
                 type: 'GET',
                 success: function(response) {
                     $('#editheroId').val(response.hero.id);
@@ -345,7 +346,7 @@ w
             let formData = new FormData(this);
     
             $.ajax({
-                url: `/hero/${heroId}/update`,
+                url: `${heroId}/heroupdate`,
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -356,9 +357,9 @@ w
                     $('#editheroForm')[0].reset();
                     $('#editheroModal').modal('hide');
                     $(`#hero_${response.hero.id} td:nth-child(3)`).text(response.hero.title);
-                    $(`#hero_${response.hero.id} td:nth-child(3)`).text(response.hero.description);
-                    $(`#hero_${response.hero.id} td:nth-child(3)`).text(response.hero.status);
-                    $(`#hero_${response.hero.id} td:nth-child(4) img`).attr('src', response.hero.image);
+                    $(`#hero_${response.hero.id} td:nth-child(4)`).text(response.hero.description);
+                    $(`#hero_${response.hero.id} td:nth-child(5)`).text(response.hero.status);
+                    $(`#hero_${response.hero.id} td:nth-child(6) img`).attr('src', response.hero.image);
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -379,7 +380,7 @@ $(document).on('change', '.toggleStatus', function () {
     const heroId = $(this).data('id');
     const newStatus = $(this).is(':checked') ? 1 : 0;
 
-    axios.post(`/hero/toggle-status/${heroId}`, {
+    axios.post(`/toggle-status/${heroId}`, {
         status: newStatus
     }, {
         headers: {
@@ -415,7 +416,7 @@ $(document).on('change', '.toggleStatus', function () {
                 confirmButtonText: 'Yes, delete it!',
             }).then(result => {
                 if (result.isConfirmed) {
-                    axios.delete(`/hero/delete/${heroId}`, {
+                    axios.delete(`/delete/${heroId}`, {
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         }

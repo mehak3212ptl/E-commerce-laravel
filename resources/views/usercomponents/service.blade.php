@@ -23,16 +23,16 @@
     @foreach($products1 as $product)
       <div class="col-md-4 mb-4">
         <div class="card h-100 shadow-sm">
-          <img src="{{ asset($product->image) }}" class="card-img-top" style="height:250px; object-fit:cover;">
+        <img src="/Upload/products/{{ basename($product->image) }}" class="card-img-top" style="height:250px; object-fit:cover;">
           <div class="card-body">
             <h5>Product Name:{{ $product->name }}</h5>
             <p>Description:{{ $product->description }}</p>
             <h5>Price:{{ $product->price }}</h5>
-            <a href="{{ route ('detail', ['id' => $product->id] ) }}" class="btn btn-success w-100">View Product Details</a>
-            <form action="{{ route('wishlist.add', $product->id) }}" method="POST" class="mt-2">
-          @csrf
-          <button type="submit" class="btn btn-outline-danger w-100">Add to Wishlist ❤️</button>
-        </form>
+            <a href="{{ url ('detail', ['id' => $product->id] ) }}" class="btn btn-success w-100">View Product Details</a>
+            <form action="{{ url('/wishlist/add/' . $product->id) }}" method="POST" class="mt-2">
+              @csrf
+              <button type="submit" class="btn btn-outline-danger w-100">Add to Wishlist ❤️</button>
+            </form>
           </div>
         </div>
       </div>

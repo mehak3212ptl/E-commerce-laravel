@@ -93,10 +93,9 @@
 @if (Route::has('login'))
     <div class="position-absolute d-flex align-items-center top-0 end-0 p-3 text-end z-3">
       @auth
-      @if((auth()->user()->hasRole('super-admin'))||(auth()->user()->hasRole('Admin')))  
-      <x-nav-link   class="nav-link" :href="route('admindashboard')" :active="request()->routeIs('admindashboard')">
-                  {{ __('Dashboard') }}
-              </x-nav-link>
+      @if(Auth::user()->type!='user') 
+      <a href="{{ url('/admindashboard') }}" class="fw-semibold text-secondary text-decoration-none me-2 dashboard">Dashboard</a>
+     
       @endif
  
         <form method="POST" action="{{ route('logout') }}">

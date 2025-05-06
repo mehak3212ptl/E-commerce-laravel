@@ -24,20 +24,25 @@ class UseraboutController extends Controller
             'description' => 'required',
             'image' => 'nullable|image'
         ]);
-
+    
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('Upload/about', 'public');
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $destinationPath = public_path('Upload/about'); // → this is /public/Upload/about
+            $image->move($destinationPath, $filename);
+            $imagePath = 'Upload/about/' . $filename; // Relative path for asset()
         }
-
+    
         Userabout::create([
             'title' => $request->title,
             'description' => $request->description,
             'image' => $imagePath,
         ]);
-
+    
         return redirect('/about')->with('success', 'Post created successfully!');
     }
+    
 
     public function edit($id) {
         $post = Userabout::findOrFail($id);

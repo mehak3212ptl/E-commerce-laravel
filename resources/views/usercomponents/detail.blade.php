@@ -6,7 +6,7 @@
 <div class="container my-5 bg-light  py-5 px-4">
   <div class="row d-flex align-items-center">
     <div class="col-md-6 text-center">
-      <img src="{{ asset($products1->image) }}"
+      <img src="/Upload/products/{{ basename($products1->image) }}"
            class="img-fluid rounded shadow-sm"
            style="max-height: 350px; object-fit: cover;">
     </div>
@@ -28,7 +28,7 @@
         Total Price: ₹<span id="total-price">{{ $products1->price }}</span>
       </h4>
 
-      <form action="{{ route('razorpay.payment') }}"
+      <form action="{{ url('success') }}"
             method="POST"
             id="payment-form">
         @csrf

@@ -10,13 +10,15 @@
       <div class="col-md-6 px-5">
         <h1 class="display-4 fw-bold">Offer!</h1>
         <h1 class="display-4 fw-bold">We Are Providing The Best Services !!</h1>
+        <h5 class="card-title">{{ $activeHeroes->title }}</h5>
+        <h5 class="card-title">{{ $activeHeroes->description }}</h5>
        
         <a href="{{ route('service') }}" class="btn btn-outline-dark mt-3">View Products</a>
       </div>
 
       <!-- Right Side: Image -->
       <div class="col-md-6 text-center d-flex justify-content-center">
-        <img src="" 
+      <img src="Upload/Banner/{{ basename($activeHeroes->url) }}"  class="card-img-top" alt="{{ $activeHeroes->title }}"
              alt="Banner Image" 
              class="img-fluid ms-md-5"
              style="max-height: 90vh; object-fit: contain; width: 100%; margin-right: 10%;">
@@ -27,5 +29,21 @@
 </section>
 
 
+<!-- 
+<div class="container">
+    @if($activeHeroes)
+        <div class="card">
+            @if($activeHeroes->image)
+                <img src="{{ asset('storage/' . $activeHeroes->image) }}" class="card-img-top" alt="{{ $activeHeroes->title }}">
+            @endif
+            <div class="card-body">
+                <h2 class="card-title">{{ $activeHeroes->title }}</h2>
+                <p class="card-text">{!! $activeHeroes->description !!}</p>
+            </div>
+        </div>
+    @else
+        <p>No active hero found.</p>
+    @endif
+</div> -->
 
 @endsection

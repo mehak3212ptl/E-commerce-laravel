@@ -4,7 +4,7 @@
 
 <div class="main mx-5">
 <div class="container mt-5">
-<h1 class="mb-4">Banner Image</h1>
+<h1 class="mb-4">About us  Image</h1>
 
 {{-- Show Success Message --}}
 @if(session('success'))
@@ -27,7 +27,8 @@
 
     <input type="file" name="image"><br>
     @if(isset($post) && $post->image)
-        <img src="{{ asset('storage/' . $post->image) }}" width="100"><br>
+    <img src="/Upload/about/{{ basename($post->image) }}" style="width: 120px; height: 60px; cursor:pointer;"
+    class="product-img" alt="Image">
     @endif
 
     <button class="btn btn-success" type="submit">{{ isset($edit) && $edit ? 'Update' : 'Save' }}</button>
@@ -59,7 +60,7 @@
                         <td>{!! $item->description !!}</td> {{-- Allow HTML formatting from Jodit --}}
                         <td>
                             @if($item->image)
-                                <img src="{{ asset('storage/' . $item->image) }}" style="width: 100px; height: 60px; object-fit: cover; border-radius: 0.5rem;" alt="Post Image">
+                            <img src="/Upload/about/{{ basename($item->image) }}" style="width: 100px; height: 60px; object-fit: cover; border-radius: 0.5rem;" alt="Post Image">
                             @else
                                 <span class="text-muted fst-italic">No Image</span>
                             @endif
