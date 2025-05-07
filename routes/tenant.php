@@ -41,7 +41,7 @@ Route::middleware([
 
 
 
-    // User interface 
+// User interface 
 Route::get('/',[Usercontroller::class,'index1'])->name('index');
 Route::get('aboutus',[Usercontroller::class,'about'])->name('aboutus');
 Route::get('contact',[Usercontroller::class,'contact'])->name('contact');
@@ -52,7 +52,9 @@ Route::get('detail/{id}',[Usercontroller::class,'detail'])->name('detail');
 Route::get('/wishlist', [UserController::class, 'index']);
 Route::post('/wishlist/add/{id}', [UserController::class, 'add']);
 Route::post('/wishlist/remove/{id}', [UserController::class, 'remove']);
-Route::post('success',[Usercontroller::class,'success']);
+// stripe integration 
+Route::get('success',[Usercontroller::class,'success']);
+Route::post('/stripe/checkout', [Usercontroller::class, 'checkout'])->name('stripe.checkout');
 
 
 

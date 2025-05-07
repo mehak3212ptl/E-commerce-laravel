@@ -3,7 +3,7 @@
 
 <h2 class="text-center mb-5">Product Details</h2>
 
-<div class="container my-5 bg-light  py-5 px-4">
+<div class="container my-5 bg-light py-5 px-4">
   <div class="row d-flex align-items-center">
     <div class="col-md-6 text-center">
       <img src="/Upload/products/{{ basename($products1->image) }}"
@@ -28,42 +28,33 @@
         Total Price: ₹<span id="total-price">{{ $products1->price }}</span>
       </h4>
 
-      <form action="{{ url('success') }}"
-            method="POST"
-            id="payment-form">
+      <form action="{{ url('stripe/checkout') }}" method="POST" id="stripe-payment-form">
         @csrf
-        <!-- hidden fields to be filled by JS -->
-        <input type="hidden" name="product_id" value="{{ $products1->id }}">
-        <input type="hidden" name="quantity" id="form-quantity" value="1">
-        <input type="hidden" name="amount" id="form-amount" value="{{ $products1->price * 100 }}">
-        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
-        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
-        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
-
-        <button type="button" id="rzp-button" class="btn btn-primary mt-3">
-          Pay Now
+        <input type="hidden" name="product_name" value="{{ $products1->name }}">
+        <input type="hidden" name="quantity" id="stripe-quantity" value="1">
+        <input type="hidden" name="amount" id="stripe-amount" value="{{ $products1->price * 100 }}">
+        
+        <button type="submit" class="btn btn-primary mt-3">
+          Pay with Stripe
         </button>
       </form>
-
     </div>
   </div>
 </div>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  const qtyInput      = document.getElementById('quantity');
-  const totalDisplay  = document.getElementById('total-price');
-  const unitPrice     = parseFloat(document.getElementById('unit-price').textContent);
-  const btnPay        = document.getElementById('rzp-button');
-  const formQuantity  = document.getElementById('form-quantity');
-  const formAmount    = document.getElementById('form-amount');
+  const qtyInput     = document.getElementById('quantity');
+  const totalDisplay = document.getElementById('total-price');
+  const unitPrice    = parseFloat(document.getElementById('unit-price').textContent);
+  const formQty      = document.getElementById('stripe-quantity');
+  const formAmount   = document.getElementById('stripe-amount');
 
   function updateTotals() {
-    const qty   = parseInt(qtyInput.value, 10);
+    const qty = parseInt(qtyInput.value, 10);
     const total = qty * unitPrice;
     totalDisplay.textContent = total.toFixed(2);
-    formQuantity.value = qty;
-    formAmount.value   = Math.round(total * 100); // paise, integer
+    formQty.value = qty;
+    formAmount.value = Math.round(total * 100); // paise
   }
 
   function incrementQty() {
@@ -77,35 +68,5 @@
       updateTotals();
     }
   }
-
-  btnPay.onclick = function(e) {
-    e.preventDefault();
-    const amountPaise = parseInt(formAmount.value, 10);
-
-    const options = {
-      key:        "{{ config('services.razorpay.key') }}",
-      amount:     amountPaise,
-      currency:   "INR",
-      name:       "{{ config('app.name') }}",
-      description: "Payment for {{ $products1->name }}",
-      image:      "{{ asset('logo.png') }}",
-      handler: function (response) {
-        // fill hidden form fields and submit
-        document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
-        document.getElementById('razorpay_order_id').value   = response.razorpay_order_id;
-        document.getElementById('razorpay_signature').value  = response.razorpay_signature;
-        document.getElementById('payment-form').submit();
-      },
-      prefill: {
-        name:  "{{ Auth::user()->name ?? '' }}",
-        email: "{{ Auth::user()->email ?? '' }}",
-      },
-      theme: {
-        color: "#3399cc"
-      }
-    };
-    const rzp = new Razorpay(options);
-    rzp.open();
-  };
 </script>
 @endsection

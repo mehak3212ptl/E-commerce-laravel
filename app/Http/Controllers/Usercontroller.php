@@ -7,6 +7,8 @@ use App\Models\category;
 use App\Models\Userabout;
 use Illuminate\Http\Request;
 use App\Models\ProductsModel;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class Usercontroller extends Controller
 {
@@ -83,6 +85,30 @@ public function remove(Request $request, $id)
 
 public function success(){
     return view('usercomponents/success');       
+}
+
+
+public function checkout(Request $request)
+{
+    Stripe::setApiKey(config('services.stripe.secret'));
+
+    $session = Session::create([
+        'line_items' => [[
+            'price_data' => [
+                'currency'     => 'inr',
+                'unit_amount'  => $request->amount, // amount in paise
+                'product_data' => [
+                    'name' => $request->product_name,
+                ],
+            ],
+            'quantity' => $request->quantity,
+        ]],
+        'mode' => 'payment',
+        'success_url' => url('success') . '?payment=success',
+        'cancel_url'  => url('/') . '?payment=cancel',
+    ]);
+
+    return redirect($session->url);
 }
 
 }
