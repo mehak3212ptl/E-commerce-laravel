@@ -19,6 +19,7 @@ class ProductsController extends Controller
     public function index()
     {
         $products = ProductsModel::with('category')->latest()->get();
+        
         return view('products.index', compact('products'));
     }
 

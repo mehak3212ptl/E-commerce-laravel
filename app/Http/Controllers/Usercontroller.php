@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Stripe\Stripe;
 use App\Models\hero;
 use App\Models\category;
 use App\Models\Userabout;
 use Illuminate\Http\Request;
-use App\Models\ProductsModel;
-use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use App\Models\ProductsModel;
+
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+
 
 class Usercontroller extends Controller
 {
@@ -83,32 +87,62 @@ public function remove(Request $request, $id)
     return redirect()->back()->with('success', 'Product removed from wishlist.');
 }
 
-public function success(){
-    return view('usercomponents/success');       
+public function success(Request $request){
+
+    if ($request->query('payment') === 'success') {
+        // Assuming you passed user's email via session or query
+        $email = $request->query('email'); // e.g., ?payment=success&email=someone@example.com
+
+        if ($email) {
+            Mail::raw('Thank you for your purchase! Your order was successful.', function ($message) use ($email) {
+                $message->to($email)
+                        ->subject('Order Confirmation');
+            });
+
+            return view('usercomponents/success');
+        }
+
+        return response('Email not provided.', 400);
+    }
+
+    return response('Payment not successful.', 400);
+    // return view('usercomponents/success');       
 }
 
 
 public function checkout(Request $request)
 {
-    Stripe::setApiKey(config('services.stripe.secret'));
+ 
 
-    $session = Session::create([
-        'line_items' => [[
-            'price_data' => [
-                'currency'     => 'inr',
-                'unit_amount'  => $request->amount, // amount in paise
-                'product_data' => [
-                    'name' => $request->product_name,
+        // Validate incoming data
+        $request->validate([
+            'email'        => 'required|email',
+            'amount'       => 'required|integer|min:1',
+            'product_name' => 'required|string',
+            'quantity'     => 'required|integer|min:1',
+        ]);
+    
+        Stripe::setApiKey(config('services.stripe.secret'));
+    
+        $session = Session::create([
+            'line_items' => [[
+                'price_data' => [
+                    'currency'     => 'inr',
+                    'unit_amount'  => $request->amount, // amount in paise
+                    'product_data' => [
+                        'name' => $request->product_name,
+                    ],
                 ],
-            ],
-            'quantity' => $request->quantity,
-        ]],
-        'mode' => 'payment',
-        'success_url' => url('success') . '?payment=success',
-        'cancel_url'  => url('/') . '?payment=cancel',
-    ]);
-
-    return redirect($session->url);
+                'quantity' => $request->quantity,
+            ]],
+            'mode' => 'payment',
+            'success_url' => url('success') . '?payment=success&email=' . urlencode($request->email),
+            'cancel_url'  => url('/') . '?payment=cancel',
+        ]);
+    
+        return redirect($session->url);
+    }
+    
 }
 
-}
+

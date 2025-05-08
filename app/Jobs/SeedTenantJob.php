@@ -5,6 +5,7 @@ namespace App\Jobs;
 
 use App\Models\User;
 use App\Models\Tenant;
+use App\Models\category;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -33,6 +34,10 @@ class SeedTenantJob implements ShouldQueue
             $user=User::latest()->first();
             $user->type='admin';
             $user->save();
+            category::create([
+                'categoryname'=>'Electronics',
+                ]);
+
         });
     }
 }

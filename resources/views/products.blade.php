@@ -142,7 +142,11 @@
 
                         <select name="category" class="form-control" required>
                        
-                        <option value="1">Beauty</option>
+                        <option value="">---select category--</option>
+                        @foreach($categories as $category)
+                        <option value="{{$category->id}}">{{$category->categoryname}}</option>
+                        @endforeach
+
                         </select>
                         </div> 
                     <div class="form-group mb-3">
@@ -190,7 +194,10 @@
 
                         <select id="editcategory" name="category" class="form-control" required>
                         
-                        <option value="1">Beauty</option>
+                        <option value="">---select category--</option>
+                        @foreach($categories as $category)
+                        <option value="{{$category->id}}">{{$category->categoryname}}</option>
+                        @endforeach
                        
                         </select>
                         </div>

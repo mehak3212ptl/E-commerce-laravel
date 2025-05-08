@@ -33,6 +33,7 @@
         <input type="hidden" name="product_name" value="{{ $products1->name }}">
         <input type="hidden" name="quantity" id="stripe-quantity" value="1">
         <input type="hidden" name="amount" id="stripe-amount" value="{{ $products1->price * 100 }}">
+        <input type="hidden" name="email" value="{{ auth()->user()->email ?? '' }}">
         
         <button type="submit" class="btn btn-primary mt-3">
           Pay with Stripe

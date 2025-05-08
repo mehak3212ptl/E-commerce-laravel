@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\category;
 use Illuminate\Http\Request;
 use App\Models\ProductsModel;
 
@@ -15,6 +16,7 @@ class admincontroller extends Controller
     $countproducts=$products1->count();
     $user=User::get()->count();
     $products = ProductsModel::with('category')->get()->count();
+   
     return view('admincomponents.cards',compact('countproducts','user','products')) ;
     }
 
@@ -29,8 +31,8 @@ class admincontroller extends Controller
     {
     $products1 = ProductsModel::latest()->get();
     $products = ProductsModel::with('category')->get();
-    
-    return view('admincomponents.viewproduct', compact('products','products1')) ;
+    $categories = category::get();
+    return view('admincomponents.viewproduct', compact('products','products1','categories')) ;
     }
     
     
