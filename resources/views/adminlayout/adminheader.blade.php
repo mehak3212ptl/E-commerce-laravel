@@ -263,6 +263,8 @@ body.dark-mode {
 
     <a href="{{ url('permissions') }}">Permissions</a>
     <a href="{{ url('roles') }}">Roles</a>
+    <a href="{{ url('admin/footer') }}">Footer</a>
+
 
     
   <a href="{{url('settings')}}">Settings</a>

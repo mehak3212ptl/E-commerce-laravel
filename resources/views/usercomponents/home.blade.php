@@ -10,19 +10,38 @@
       <div class="col-md-6 px-5">
         <h1 class="display-4 fw-bold">Offer!</h1>
         <h1 class="display-4 fw-bold">We Are Providing The Best Services !!</h1>
-        <h5 class="card-title">{{ $activeHeroes->title }}</h5>
-        <h5 class="card-title">{{ $activeHeroes->description }}</h5>
-       
-        <a href="{{ route('service') }}" class="btn btn-outline-dark mt-3">View Products</a>
-      </div>
 
-      <!-- Right Side: Image -->
-      <div class="col-md-6 text-center d-flex justify-content-center">
-      <img src="Upload/Banner/{{ basename($activeHeroes->url) }}"  class="card-img-top" alt="{{ $activeHeroes->title }}"
+@if ($activeHeroes)
+    <!-- Dynamic Content -->
+    <h5 class="card-title">{{ $activeHeroes->title }}</h5>
+    <h5 class="card-title">{{ $activeHeroes->description }}</h5>
+    <a href="{{ route('service') }}" class="btn btn-outline-dark mt-3">View Products</a>
+</div>
+
+<!-- Right Side: Image -->
+<div class="col-md-6 text-center d-flex justify-content-center">
+<img src="Upload/Banner/{{ basename($activeHeroes->url) }}"  class="card-img-top" alt="{{ $activeHeroes->title }}"
              alt="Banner Image" 
              class="img-fluid ms-md-5"
              style="max-height: 90vh; object-fit: contain; width: 100%; margin-right: 10%;">
-      </div>
+</div>
+
+@else
+    <!-- Static Fallback Content -->
+    <h5 class="card-title">Welcome to Our Services</h5>
+    <h5 class="card-title">We offer top-notch quality and customer satisfaction.</h5>
+    <a href="{{ route('service') }}" class="btn btn-outline-dark mt-3">Explore Our Services</a>
+</div>
+
+@php
+    $staticImage = 'images/IMG-20250412-WA0005.jpg'; // Make sure this file exists
+@endphp
+<div class="col-md-6 text-center d-flex justify-content-center">
+    <img src="{{ $staticImage }}" 
+         class="img-fluid ms-md-5"
+         style="max-height: 90vh; object-fit: contain; width: 100%; margin-right: 10%;"
+         alt="Default Banner Image">
+@endif
 
     </div>
   </div>

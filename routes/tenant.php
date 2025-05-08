@@ -12,6 +12,7 @@ use App\Http\Controllers\admincontroller;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UseraboutController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\FooterController;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -108,8 +109,39 @@ Route::delete('/products/delete/{id}', [ProductsController::class, 'destory']);
     
     Route::resource('users',SpatieUserController::class);
     Route::get('users/{userId}/delete',[SpatieUserController::class,'destroy']);
-    
 
+
+
+    // footer section 
+    // Footer Management Routes
+
+    // Route::get('/footer', [FooterController::class, 'index'])->name('footer.index');
+    
+    // // Create and store routes
+    // Route::get('/footer/create/{type}', [FooterController::class, 'create'])->name('footer.create');
+    // Route::post('/footer/store', [FooterController::class, 'store'])->name('footer.store');
+    
+    // // Edit and update routes
+    // Route::get('/footer/edit/{type}/{id?}', [FooterController::class, 'edit'])->name('footer.edit');
+    // Route::put('/footer/update/{type}/{id?}', [FooterController::class, 'update'])->name('footer.update');
+    
+    // // Delete route
+    // Route::delete('/footer/destroy/{type}/{id}', [FooterController::class, 'destroy'])->name('footer.destroy');
+    
+    // // Update order route
+    // Route::post('/footer/update-order', [FooterController::class, 'updateOrder'])->name('footer.updateOrder');
+
+    
+    Route::prefix('admin/footer')->group(function () {
+        Route::get('/', [FooterController::class, 'index'])->name('admin.footer.index');
+        Route::get('create/{type}', [FooterController::class, 'create']);
+        Route::post('store', [FooterController::class, 'store']); // <-- Ensure this exists
+        Route::get('edit/{type}/{id?}', [FooterController::class, 'edit']);
+        Route::put('update/{type}', [FooterController::class, 'update']);
+        Route::post('delete/{type}/{id}', [FooterController::class, 'destroy']);
+        Route::post('update-order', [FooterController::class, 'updateOrder']);
+    });
+    
    
    require __DIR__.'/user-auth.php';
 
